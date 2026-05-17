@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> EXPO INVESTMENT- Register & Login</title>
+    <title>EXPO INVESTMENT - Register & Login</title>
     <style>
         * {
             margin: 0;
@@ -91,6 +91,11 @@
             outline: none;
             border-color: #3b82f6;
             background-color: #f0f4ff;
+        }
+
+        input[type="checkbox"] {
+            width: auto;
+            margin-right: 8px;
         }
 
         .form-row {
@@ -215,6 +220,17 @@
             font-size: 12px;
             margin-top: 5px;
             display: none;
+            padding: 10px;
+            background: #dcfce7;
+            border-radius: 4px;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #3b82f6;
+            font-size: 14px;
+            margin-top: 10px;
         }
 
         @media (max-width: 768px) {
@@ -238,7 +254,7 @@
         <!-- Registration Form -->
         <div class="form-container register">
             <div class="brand">
-                <h1>SN INVESTMENT</h1>
+                <h1>EXPO INVESTMENT</h1>
                 <p>Create Your Account</p>
             </div>
 
@@ -287,7 +303,8 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">Create Account</button>
-                <div class="success" id="registerSuccess">Account created successfully!</div>
+                <div class="loading" id="registerLoading">Creating account...</div>
+                <div class="success" id="registerSuccess">✓ Account created successfully! Redirecting...</div>
             </form>
 
             <div class="toggle-form">
@@ -299,7 +316,7 @@
         <!-- Login Form -->
         <div class="form-container login">
             <div class="brand">
-                <h1>SN INVESTMENT</h1>
+                <h1>EXPO INVESTMENT</h1>
                 <p>Welcome Back</p>
             </div>
 
@@ -322,7 +339,8 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary">Log In</button>
-                <div class="success" id="loginSuccess">Login successful!</div>
+                <div class="loading" id="loginLoading">Logging in...</div>
+                <div class="success" id="loginSuccess">✓ Login successful! Redirecting...</div>
             </form>
 
             <div class="toggle-form">
@@ -374,9 +392,7 @@
                 loginForm.classList.remove('active');
             }
 
-            // Clear all error messages
             clearAllErrors();
-            // Clear form fields
             document.getElementById('registerForm').reset();
             document.getElementById('loginForm').reset();
         }
@@ -384,6 +400,10 @@
         function clearAllErrors() {
             const errorElements = document.querySelectorAll('.error');
             errorElements.forEach(el => el.style.display = 'none');
+            document.getElementById('registerSuccess').style.display = 'none';
+            document.getElementById('loginSuccess').style.display = 'none';
+            document.getElementById('registerLoading').style.display = 'none';
+            document.getElementById('loginLoading').style.display = 'none';
         }
 
         function showError(elementId, message) {
@@ -408,7 +428,6 @@
 
             let isValid = true;
 
-            // Validation
             if (firstName.length < 2) {
                 showError('firstNameError', 'First name must be at least 2 characters');
                 isValid = false;
@@ -445,21 +464,29 @@
             }
 
             if (isValid) {
-                // Here you would typically send data to a server
+                document.getElementById('registerLoading').style.display = 'block';
+
                 const userData = {
                     firstName,
                     lastName,
                     email,
                     contact,
-                    nationalId,
-                    password: '***' // Never send plain passwords to console
+                    nationalId
                 };
-                console.log('Registration Data:', userData);
-                
-                document.getElementById('registerSuccess').style.display = 'block';
+
+                // Simulate server delay
                 setTimeout(() => {
-                    switchForm('login');
-                }, 2000);
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    localStorage.setItem('isLoggedIn', 'true');
+                    console.log('Registration Data:', userData);
+
+                    document.getElementById('registerLoading').style.display = 'none';
+                    document.getElementById('registerSuccess').style.display = 'block';
+
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
+                }, 1500);
             }
         }
 
@@ -484,24 +511,40 @@
             }
 
             if (isValid) {
-                // Here you would typically authenticate with a server
-                const loginData = {
-                    email,
-                    rememberMe
-                };
-                console.log('Login Data:', loginData);
-                
-                document.getElementById('loginSuccess').style.display = 'block';
+                document.getElementById('loginLoading').style.display = 'block';
+
+                // Simulate server authentication delay
                 setTimeout(() => {
-                    alert('Login successful! Redirecting to dashboard...');
-                    // In a real app, redirect to dashboard
+                    const loginData = {
+                        email,
+                        rememberMe,
+                        loginTime: new Date().toISOString()
+                    };
+                    
+                    localStorage.setItem('isLoggedIn', 'true');
+                    localStorage.setItem('userEmail', email);
+                    if (rememberMe) {
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+                    
+                    console.log('Login Data:', loginData);
+
+                    document.getElementById('loginLoading').style.display = 'none';
+                    document.getElementById('loginSuccess').style.display = 'block';
+
+                    setTimeout(() => {
+                        window.location.href = 'home.html';
+                    }, 1500);
                 }, 1500);
             }
         }
 
-        // Auto-hide success messages
-        document.getElementById('registerSuccess').addEventListener('animationend', function() {
-            this.style.display = 'none';
+        // Check if already logged in
+        window.addEventListener('load', function() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            if (isLoggedIn === 'true') {
+                window.location.href = 'home.html';
+            }
         });
     </script>
 </body>
