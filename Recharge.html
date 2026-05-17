@@ -90,6 +90,11 @@
     </div>
 
     <button class="btn" id="payBtn" onclick="initiatePayment()">Pay Now</button>
+   <div id="txnIdDiv" style="display:none; margin-top:15px;">
+  <p>After paying, enter the M##### transaction ID from the MTN SMS:</p>
+  <input type="text" id="txnId" placeholder="M12345678" style="width:100%; padding:10px;">
+  <button onclick="confirmPayment()" style="margin-top:10px; width:100%;">I Paid</button>
+   </div>
     <p class="note">You will receive a prompt on your phone to confirm payment</p>
 </div>
 
@@ -127,10 +132,33 @@ function validateForm() {
 }
 
 async function initiatePayment() {
-    if (!validateForm()) return;
+    const phone = document.getElementById('phone').value;
+    const amount = document.getElementById('amount').value;
+
+    if (!phone || !amount) {
+        alert('Enter phone and amount');
+        return;
+    }
+
+    alert(`Pay ${amount} UGX to 0780194414 using *165*1*1#\n\nAfter payment, enter the M##### transaction ID to confirm.`);
     
-    const btn = document.getElementById('payBtn');
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
+    // Show a field for transaction ID so you can verify it
+    document.getElementById('txnIdDiv').style.display = 'block';
+   }
+   function confirmPayment() {
+    const txnId = document.getElementById('txnId').value;
+    const amount = document.getElementById('amount').value;
     
-    const phone =
+    if (!txnId.startsWith('M') || txnId.length < 8) {
+        alert('Enter a valid MTN transaction ID');
+        return;
+    }
+    
+    alert(`Payment ${txnId} submitted. We’ll credit ${amount} UGX after verification.`);
+    
+    document.getElementById('txnIdDiv').style.display = 'none';
+    document.getElementById('txnId').value = '';
+    
+    // Uncomment this line when you want to auto-credit after testing:
+    // loadBalance(parseInt(amount));
+   }
