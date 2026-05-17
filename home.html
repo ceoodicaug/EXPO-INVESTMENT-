@@ -151,7 +151,7 @@
 
 <div class="balance-row">
     <div class="balance-card blue">
-        <div class="amount" id="balance">UGX 00.0</div>
+        <div class="amount" id="availableBalance">UGX 00.0</div>
         <div class="label">Available balance</div>
     </div>
     <div class="balance-card teal">
@@ -217,6 +217,23 @@ if (user.firstName) {
     document.getElementById('username').textContent = user.firstName + ' + user.lastName;
     document.getElementById('avatar').textContent = user.firstName.charAt(0).toUpperCase();
 }
+   // Load and update balance automatically
+function loadBalance() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const rechargeAmount = urlParams.get('recharge');
+    
+    if (rechargeAmount) {
+        let current = parseFloat(localStorage.getItem('balance') || 0);
+        let newBalance = current + parseFloat(rechargeAmount);
+        localStorage.setItem('balance', newBalance);
+        window.history.replaceState({}, document.title, window.location.pathname);
+    }
+
+    let balance = localStorage.getItem('balance') || 0;
+    document.getElementById('availableBalance').innerText = 'UGX ' + parseFloat(balance).toFixed(1);
+}
+
+loadBalance();
 </script>
 
 </body>
