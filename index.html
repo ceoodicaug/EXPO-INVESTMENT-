@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SN Investment - Register & Login</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .form-container {
+            flex: 1;
+            padding: 50px 40px;
+            background: white;
+        }
+
+        .form-container.login {
+            display: none;
+        }
+
+        .form-container.login.active {
+            display: block;
+        }
+
+        .form-container.register.hidden {
+            display: none;
+        }
+
+        .brand {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .brand h1 {
+            color: #1e3a8a;
+            font-size: 32px;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .brand p {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #0f172a;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+            font-family: inherit;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            background-color: #f0f4ff;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .form-group.full {
+            grid-column: 1 / -1;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(30, 58, 138, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .toggle-form p {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .toggle-link {
+            color: #3b82f6;
+            cursor: pointer;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .toggle-link:hover {
+            color: #1e3a8a;
+        }
+
+        .info-section {
+            flex: 1;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+            color: white;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .info-section h2 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .info-section p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+
+        .features {
+            margin-top: 30px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .feature-icon {
+            width: 30px;
+            height: 30px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        .feature-text {
+            font-size: 14px;
+        }
+
+        .error {
+            color: #dc2626;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .success {
+            color: #16a34a;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .info-section {
+                padding: 30px 40px;
+                text-align: center;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Registration Form -->
+        <div class="form-container register">
+            <div class="brand">
+                <h1>SN INVESTMENT</h1>
+                <p>Create Your Account</p>
+            </div>
+
+            <form id="registerForm" onsubmit="handleRegister(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" name="firstName" required>
+                        <div class="error" id="firstNameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" name="lastName" required>
+                        <div class="error" id="lastNameError"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address</label>
+                    <input type="email" id="email" name="email" required>
+                    <div class="error" id="emailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="contact">Contact Number</label>
+                    <input type="tel" id="contact" name="contact" placeholder="+1 (555) 000-0000" required>
+                    <div class="error" id="contactError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="nationalId">National ID</label>
+                    <input type="text" id="nationalId" name="nationalId" placeholder="Enter your National ID" required>
+                    <div class="error" id="nationalIdError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                    <div class="error" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                    <div class="error" id="confirmPasswordError"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                <div class="success" id="registerSuccess">Account created successfully!</div>
+            </form>
+
+            <div class="toggle-form">
+                <p>Already have an account?</p>
+                <span class="toggle-link" onclick="switchForm('login')">Log In Here</span>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="form-container login">
+            <div class="brand">
+                <h1>SN INVESTMENT</h1>
+                <p>Welcome Back</p>
+            </div>
+
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" name="loginEmail" required>
+                    <div class="error" id="loginEmailError"></div>
+                </div>
+
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" name="loginPassword" required>
+                    <div class="error" id="loginPasswordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <input type="checkbox" id="rememberMe" name="rememberMe">
+                    <label for="rememberMe" style="display: inline; margin-left: 8px; font-weight: 400;">Remember Me</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Log In</button>
+                <div class="success" id="loginSuccess">Login successful!</div>
+            </form>
+
+            <div class="toggle-form">
+                <p>Don't have an account?</p>
+                <span class="toggle-link" onclick="switchForm('register')">Sign Up Here</span>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <h2>Secure Investment Platform</h2>
+            <p>Join thousands of investors managing their portfolios with confidence and transparency.</p>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <div class="feature-text">Bank-level security for your data</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <div class="feature-text">Real-time portfolio tracking</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎯</div>
+                    <div class="feature-text">Personalized investment strategies</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">💼</div>
+                    <div class="feature-text">Expert financial advisors</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⚡</div>
+                    <div class="feature-text">Fast and secure transactions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchForm(formType) {
+            const registerForm = document.querySelector('.form-container.register');
+            const loginForm = document.querySelector('.form-container.login');
+
+            if (formType === 'login') {
+                registerForm.classList.add('hidden');
+                loginForm.classList.add('active');
+            } else {
+                registerForm.classList.remove('hidden');
+                loginForm.classList.remove('active');
+            }
+
+            // Clear all error messages
+            clearAllErrors();
+            // Clear form fields
+            document.getElementById('registerForm').reset();
+            document.getElementById('loginForm').reset();
+        }
+
+        function clearAllErrors() {
+            const errorElements = document.querySelectorAll('.error');
+            errorElements.forEach(el => el.style.display = 'none');
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            clearAllErrors();
+
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const contact = document.getElementById('contact').value.trim();
+            const nationalId = document.getElementById('nationalId').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            let isValid = true;
+
+            // Validation
+            if (firstName.length < 2) {
+                showError('firstNameError', 'First name must be at least 2 characters');
+                isValid = false;
+            }
+
+            if (lastName.length < 2) {
+                showError('lastNameError', 'Last name must be at least 2 characters');
+                isValid = false;
+            }
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('emailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            if (!contact.match(/^[\d\s\-\+\(\)]{10,}$/)) {
+                showError('contactError', 'Please enter a valid contact number');
+                isValid = false;
+            }
+
+            if (nationalId.length < 6) {
+                showError('nationalIdError', 'National ID must be at least 6 characters');
+                isValid = false;
+            }
+
+            if (password.length < 8) {
+                showError('passwordError', 'Password must be at least 8 characters');
+                isValid = false;
+            }
+
+            if (password !== confirmPassword) {
+                showError('confirmPasswordError', 'Passwords do not match');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Here you would typically send data to a server
+                const userData = {
+                    firstName,
+                    lastName,
+                    email,
+                    contact,
+                    nationalId,
+                    password: '***' // Never send plain passwords to console
+                };
+                console.log('Registration Data:', userData);
+                
+                document.getElementById('registerSuccess').style.display = 'block';
+                setTimeout(() => {
+                    switchForm('login');
+                }, 2000);
+            }
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            clearAllErrors();
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+
+            let isValid = true;
+
+            if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showError('loginEmailError', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            if (password.length < 8) {
+                showError('loginPasswordError', 'Please enter your password');
+                isValid = false;
+            }
+
+            if (isValid) {
+                // Here you would typically authenticate with a server
+                const loginData = {
+                    email,
+                    rememberMe
+                };
+                console.log('Login Data:', loginData);
+                
+                document.getElementById('loginSuccess').style.display = 'block';
+                setTimeout(() => {
+                    alert('Login successful! Redirecting to dashboard...');
+                    // In a real app, redirect to dashboard
+                }, 1500);
+            }
+        }
+
+        // Auto-hide success messages
+        document.getElementById('registerSuccess').addEventListener('animationend', function() {
+            this.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
