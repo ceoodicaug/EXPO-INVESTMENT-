@@ -142,10 +142,10 @@ async function initiatePayment() {
 
     alert(`Pay ${amount} UGX to 0780194414 using *165*1*1#\n\nAfter payment, enter the M##### transaction ID to confirm.`);
     
-    // Show a field for transaction ID so you can verify it
     document.getElementById('txnIdDiv').style.display = 'block';
-   }
-   function confirmPayment() {
+}
+
+function confirmPayment() {
     const txnId = document.getElementById('txnId').value;
     const amount = document.getElementById('amount').value;
     
