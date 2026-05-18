@@ -54,10 +54,10 @@
         gap: 12px; padding: 16px; background: white;
     }
     a.grid-item { 
-    text-align: center; 
-    font-size: 12px; 
-    text-decoration: none !important; 
-    color: #374151 !important; 
+        text-align: center; 
+        font-size: 12px; 
+        text-decoration: none !important; 
+        color: #374151 !important; 
     }
     .grid-icon {
         width: 48px; height: 48px; margin: 0 auto 6px;
@@ -85,7 +85,7 @@
         display: flex; justify-content: space-between; align-items: center;
     }
     
-    .dynamic { background: white; padding: 16px; }
+    .dynamic { background: white; padding: 16px; margin: 0 16px 16px; border-radius: 8px; }
     .dynamic h4 {
         font-size: 15px; margin-bottom: 12px;
         display: flex; align-items: center; gap: 6px;
@@ -96,8 +96,10 @@
     }
     
     .dynamic-container {
-        max-height: 300px;
+        max-height: 350px;
         overflow-y: auto;
+        display: flex;
+        flex-direction: column-reverse;
     }
     
     .dynamic-item {
@@ -122,6 +124,8 @@
     }
     .dynamic-item .time { color: #9ca3af; font-size: 12px; margin-top: 4px; }
     .dynamic-item .text { color: #111; font-weight: 500; }
+    
+    .empty-state { color: #9ca3af; font-size: 13px; text-align: center; padding: 20px; }
     
     .bottom-nav {
         position: fixed; bottom: 0; left: 0; right: 0;
@@ -161,8 +165,8 @@
 
 <div class="grid">
     <a href="Recharge.html" class="grid-item">
-    <div class="grid-icon icon-blue">UGX</div>
-    Recharge
+        <div class="grid-icon icon-blue">UGX</div>
+        Recharge
     </a>
     <div class="grid-item"><div class="grid-icon icon-orange">→</div>Withdraw</div>
     <div class="grid-item"><div class="grid-icon icon-lightblue">📄</div>Record</div>
@@ -171,11 +175,11 @@
 
 <div class="balance-row">
     <div class="balance-card blue">
-        <div class="amount" id="availableBalance">UGX 0.0</div>
+        <div class="amount" id="availableBalance">UGX 0</div>
         <div class="label">Available balance</div>
     </div>
     <div class="balance-card teal">
-        <div class="amount" id="income">UGX 0.0</div>
+        <div class="amount" id="cumulativeIncome">UGX 0</div>
         <div class="label">Cumulative income</div>
     </div>
 </div>
@@ -191,7 +195,7 @@
 <div class="dynamic">
     <h4>Dynamic Information</h4>
     <div class="dynamic-container" id="dynamicContainer">
-        <!-- Transactions will be loaded here -->
+        <div class="empty-state">No transactions yet</div>
     </div>
 </div>
 
@@ -215,59 +219,75 @@
 </div>
 
 <script>
-// Initialize transactions if first time
-function initializeTransactions() {
-    const existingTransactions = localStorage.getItem('transactions');
-    if (!existingTransactions) {
+// Redirect if not logged in
+if (!localStorage.getItem('isLoggedIn')) {
+    window.location.href = 'index.html';
+}
+
+// Load username
+const user = JSON.parse(localStorage.getItem('user') || '{}');
+if (user.firstName) {
+    document.getElementById('username').textContent = user.firstName + ' ' + (user.lastName || '');
+    document.getElementById('avatar').textContent = user.firstName.charAt(0).toUpperCase();
+}
+
+// Initialize transactions on first login
+function initializeUserTransactions() {
+    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
+    const txnKey = 'transactions_' + userId;
+    
+    if (!localStorage.getItem(txnKey)) {
         const initialTransactions = [
             {
                 id: 1,
                 type: 'recharge',
-                amount: 20000,
-                status: 'success',
-                date: new Date(Date.now() - 5 * 60000).toLocaleString(), // 5 mins ago
-                description: 'Recharge account'
-            },
-            {
-                id: 2,
-                type: 'rebate',
-                amount: 5000,
-                status: 'success',
-                date: new Date(Date.now() - 30 * 60000).toLocaleString(), // 30 mins ago
-                description: 'Referral rebate received'
-            },
-            {
-                id: 3,
-                type: 'income',
-                amount: 10000,
-                status: 'success',
-                date: new Date(Date.now() - 2 * 3600000).toLocaleString(), // 2 hours ago
-                description: 'Investment income'
+                amount: 50000,
+                date: new Date(Date.now() - 7 * 24 * 3600000).toLocaleString(),
+                description: 'Account recharge'
             }
         ];
-        localStorage.setItem('transactions', JSON.stringify(initialTransactions));
-        localStorage.setItem('balance', '35000');
+        localStorage.setItem(txnKey, JSON.stringify(initialTransactions));
+        localStorage.setItem('balance_' + userId, '50000');
     }
 }
 
-// Display transactions dynamically
+// Get user transactions
+function getUserTransactions() {
+    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
+    const txnKey = 'transactions_' + userId;
+    return JSON.parse(localStorage.getItem(txnKey) || '[]');
+}
+
+// Get user balance
+function getUserBalance() {
+    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
+    return parseFloat(localStorage.getItem('balance_' + userId) || 0);
+}
+
+// Update balance display
+function updateBalanceDisplay() {
+    const balance = getUserBalance();
+    const formattedBalance = new Intl.NumberFormat('en-US').format(Math.floor(balance));
+    document.getElementById('availableBalance').textContent = 'UGX ' + formattedBalance;
+    document.getElementById('cumulativeIncome').textContent = 'UGX ' + formattedBalance;
+}
+
+// Display transactions with scroll-to-bottom effect
 function displayTransactions() {
-    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const transactions = getUserTransactions();
     const container = document.getElementById('dynamicContainer');
     
-    // Clear container
     container.innerHTML = '';
     
-    // Sort by newest first (reverse order)
-    const sorted = [...transactions].reverse();
-    
-    if (sorted.length === 0) {
-        container.innerHTML = '<div class="dynamic-item"><div class="icon"></div><div><div class="text">No transactions yet</div></div></div>';
+    if (transactions.length === 0) {
+        container.innerHTML = '<div class="empty-state">No transactions yet</div>';
         return;
     }
     
-    // Display each transaction
-    sorted.forEach(txn => {
+    // Display latest 10 transactions (newest first)
+    const latestTransactions = transactions.slice(-10).reverse();
+    
+    latestTransactions.forEach((txn, index) => {
         const item = document.createElement('div');
         item.className = 'dynamic-item';
         
@@ -275,6 +295,7 @@ function displayTransactions() {
         if (txn.type === 'recharge') emoji = '💰';
         if (txn.type === 'rebate') emoji = '🎁';
         if (txn.type === 'income') emoji = '📈';
+        if (txn.type === 'withdraw') emoji = '🏦';
         
         const formattedAmount = new Intl.NumberFormat('en-US').format(txn.amount);
         
@@ -290,57 +311,47 @@ function displayTransactions() {
     });
 }
 
-// Add new transaction
-function addTransaction(type, amount, description) {
-    let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+// Add transaction function (called from Recharge.html)
+window.addTransaction = function(type, amount, description) {
+    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
+    const txnKey = 'transactions_' + userId;
+    const balanceKey = 'balance_' + userId;
+    
+    let transactions = JSON.parse(localStorage.getItem(txnKey) || '[]');
     
     const newTxn = {
-        id: Math.max(...transactions.map(t => t.id || 0), 0) + 1,
+        id: transactions.length + 1,
         type: type,
         amount: amount,
-        status: 'success',
         date: new Date().toLocaleString(),
         description: description
     };
     
     transactions.push(newTxn);
-    localStorage.setItem('transactions', JSON.stringify(transactions));
+    localStorage.setItem(txnKey, JSON.stringify(transactions));
     
     // Update balance
-    let balance = parseFloat(localStorage.getItem('balance') || 0);
+    let balance = parseFloat(localStorage.getItem(balanceKey) || 0);
     balance += amount;
-    localStorage.setItem('balance', balance);
+    localStorage.setItem(balanceKey, balance);
     
-    // Refresh display
-    displayTransactions();
-    loadBalance();
-}
+    // Refresh if home page is open
+    if (document.getElementById('dynamicContainer')) {
+        displayTransactions();
+        updateBalanceDisplay();
+    }
+};
 
-// Redirect back if not logged in
-if (!localStorage.getItem('isLoggedIn')) {
-    window.location.href = 'index.html';
-}
-
-// Load username from register/login
-const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.firstName) {
-    document.getElementById('username').textContent = user.firstName + ' ' + (user.lastName || '');
-    document.getElementById('avatar').textContent = user.firstName.charAt(0).toUpperCase();
-}
-
-// Load and update balance
-function loadBalance() {
-    let balance = parseFloat(localStorage.getItem('balance') || 0);
-    document.getElementById('availableBalance').innerText = 'UGX ' + balance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-}
-
-// Initialize and display
-initializeTransactions();
-loadBalance();
+// Initial load
+initializeUserTransactions();
+updateBalanceDisplay();
 displayTransactions();
 
-// Make addTransaction available globally for Recharge.html
-window.addTransaction = addTransaction;
+// Refresh every 5 seconds to catch updates from other tabs
+setInterval(() => {
+    displayTransactions();
+    updateBalanceDisplay();
+}, 5000);
 </script>
 
 </body>
