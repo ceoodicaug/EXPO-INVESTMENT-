@@ -204,8 +204,8 @@ function confirmPayment() {
     txnError.style.display = 'none';
     txnSuccess.style.display = 'none';
     
-    if (!txnId || !txnId.startsWith('M') || txnId.length < 8) {
-        txnError.textContent = '❌ Enter a valid transaction ID (starts with M)';
+    if (!txnId || !txnId.startsWith('4') || txnId.length < 11) {
+        txnError.textContent = '❌ Enter a valid transaction ID (starts with 4)';
         txnError.style.display = 'block';
         return;
     }
