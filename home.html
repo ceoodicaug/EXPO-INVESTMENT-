@@ -94,14 +94,34 @@
         content: ''; width: 3px; height: 16px;
         background: #3b82f6; border-radius: 2px;
     }
+    
+    .dynamic-container {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+    
     .dynamic-item {
         display: flex; gap: 10px; margin-bottom: 12px; font-size: 13px;
+        animation: slideUp 0.5s ease-in-out;
     }
+    
+    @keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
     .dynamic-item .icon {
         width: 18px; height: 18px; background: #10b981;
-        border-radius: 50%; flex-shrink: 0;
+        border-radius: 50%; flex-shrink: 0; margin-top: 2px;
     }
-    .dynamic-item .time { color: #9ca3af; font-size: 12px; margin-top: 2px; }
+    .dynamic-item .time { color: #9ca3af; font-size: 12px; margin-top: 4px; }
+    .dynamic-item .text { color: #111; font-weight: 500; }
     
     .bottom-nav {
         position: fixed; bottom: 0; left: 0; right: 0;
@@ -122,7 +142,7 @@
 <div class="header">
     <div class="header-left">Notify</div>
     <div class="header-right">
-        <span>Welcor</span>
+        <span>Welcome</span>
         <div class="reward-badge">Check-in reward</div>
     </div>
 </div>
@@ -151,11 +171,11 @@
 
 <div class="balance-row">
     <div class="balance-card blue">
-        <div class="amount" id="availableBalance">UGX 00.0</div>
+        <div class="amount" id="availableBalance">UGX 0.0</div>
         <div class="label">Available balance</div>
     </div>
     <div class="balance-card teal">
-        <div class="amount" id="income">UGX 00.0</div>
+        <div class="amount" id="income">UGX 0.0</div>
         <div class="label">Cumulative income</div>
     </div>
 </div>
@@ -169,20 +189,9 @@
 </div>
 
 <div class="dynamic">
-    <h4>Dynamic information</h4>
-    <div class="dynamic-item">
-        <div class="icon"></div>
-        <div>
-            <div class="text">rebate of UGX 00.0</div>
-            <div class="time">4-07 04:45</div>
-        </div>
-    </div>
-    <div class="dynamic-item">
-        <div class="icon"></div>
-        <div>
-            <div class="text">User 782****90 successfully received a rebate of UGX200000.00</div>
-            <div class="time">3-07 23:33</div>
-        </div>
+    <h4>Dynamic Information</h4>
+    <div class="dynamic-container" id="dynamicContainer">
+        <!-- Transactions will be loaded here -->
     </div>
 </div>
 
@@ -196,7 +205,7 @@
         <span>Invest</span>
     </a>
     <a href="team.html" class="nav-item">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm8 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
         <span>Team</span>
     </a>
     <a href="mine.html" class="nav-item">
@@ -206,6 +215,107 @@
 </div>
 
 <script>
+// Initialize transactions if first time
+function initializeTransactions() {
+    const existingTransactions = localStorage.getItem('transactions');
+    if (!existingTransactions) {
+        const initialTransactions = [
+            {
+                id: 1,
+                type: 'recharge',
+                amount: 20000,
+                status: 'success',
+                date: new Date(Date.now() - 5 * 60000).toLocaleString(), // 5 mins ago
+                description: 'Recharge account'
+            },
+            {
+                id: 2,
+                type: 'rebate',
+                amount: 5000,
+                status: 'success',
+                date: new Date(Date.now() - 30 * 60000).toLocaleString(), // 30 mins ago
+                description: 'Referral rebate received'
+            },
+            {
+                id: 3,
+                type: 'income',
+                amount: 10000,
+                status: 'success',
+                date: new Date(Date.now() - 2 * 3600000).toLocaleString(), // 2 hours ago
+                description: 'Investment income'
+            }
+        ];
+        localStorage.setItem('transactions', JSON.stringify(initialTransactions));
+        localStorage.setItem('balance', '35000');
+    }
+}
+
+// Display transactions dynamically
+function displayTransactions() {
+    const transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    const container = document.getElementById('dynamicContainer');
+    
+    // Clear container
+    container.innerHTML = '';
+    
+    // Sort by newest first (reverse order)
+    const sorted = [...transactions].reverse();
+    
+    if (sorted.length === 0) {
+        container.innerHTML = '<div class="dynamic-item"><div class="icon"></div><div><div class="text">No transactions yet</div></div></div>';
+        return;
+    }
+    
+    // Display each transaction
+    sorted.forEach(txn => {
+        const item = document.createElement('div');
+        item.className = 'dynamic-item';
+        
+        let emoji = '✓';
+        if (txn.type === 'recharge') emoji = '💰';
+        if (txn.type === 'rebate') emoji = '🎁';
+        if (txn.type === 'income') emoji = '📈';
+        
+        const formattedAmount = new Intl.NumberFormat('en-US').format(txn.amount);
+        
+        item.innerHTML = `
+            <div class="icon"></div>
+            <div>
+                <div class="text">${emoji} ${txn.description} - UGX ${formattedAmount}</div>
+                <div class="time">${txn.date}</div>
+            </div>
+        `;
+        
+        container.appendChild(item);
+    });
+}
+
+// Add new transaction
+function addTransaction(type, amount, description) {
+    let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+    
+    const newTxn = {
+        id: Math.max(...transactions.map(t => t.id || 0), 0) + 1,
+        type: type,
+        amount: amount,
+        status: 'success',
+        date: new Date().toLocaleString(),
+        description: description
+    };
+    
+    transactions.push(newTxn);
+    localStorage.setItem('transactions', JSON.stringify(transactions));
+    
+    // Update balance
+    let balance = parseFloat(localStorage.getItem('balance') || 0);
+    balance += amount;
+    localStorage.setItem('balance', balance);
+    
+    // Refresh display
+    displayTransactions();
+    loadBalance();
+}
+
 // Redirect back if not logged in
 if (!localStorage.getItem('isLoggedIn')) {
     window.location.href = 'index.html';
@@ -214,27 +324,24 @@ if (!localStorage.getItem('isLoggedIn')) {
 // Load username from register/login
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 if (user.firstName) {
-    document.getElementById('username').textContent = user.firstName + ' + user.lastName;
+    document.getElementById('username').textContent = user.firstName + ' ' + (user.lastName || '');
     document.getElementById('avatar').textContent = user.firstName.charAt(0).toUpperCase();
 }
-   // Load and update balance automatically
-function loadBalance() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const rechargeAmount = urlParams.get('recharge');
-    
-    if (rechargeAmount) {
-        let current = parseFloat(localStorage.getItem('balance') || 0);
-        let newBalance = current + parseFloat(rechargeAmount);
-        localStorage.setItem('balance', newBalance);
-        window.history.replaceState({}, document.title, window.location.pathname);
-    }
 
-    let balance = localStorage.getItem('balance') || 0;
-    document.getElementById('availableBalance').innerText = 'UGX ' + parseFloat(balance).toFixed(1);
+// Load and update balance
+function loadBalance() {
+    let balance = parseFloat(localStorage.getItem('balance') || 0);
+    document.getElementById('availableBalance').innerText = 'UGX ' + balance.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+// Initialize and display
+initializeTransactions();
 loadBalance();
+displayTransactions();
+
+// Make addTransaction available globally for Recharge.html
+window.addTransaction = addTransaction;
 </script>
 
 </body>
-   </html>
+</html>
