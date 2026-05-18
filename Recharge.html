@@ -6,37 +6,41 @@
 <title>Recharge - EXPO INVESTMENT</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-    body { background: #f5f7fa; }
+    body { background: #f5f7fa; color: #111; }
     
     .header {
         background: white; padding: 15px 16px; display: flex; align-items: center;
         border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10;
     }
-    .back { font-size: 24px; text-decoration: none; color: #111; margin-right: 12px; }
-    .header h1 { font-size: 18px; font-weight: 600; }
+    .back { font-size: 24px; text-decoration: none; color: #111; margin-right: 12px; cursor: pointer; transition: opacity 0.2s; }
+    .back:hover { opacity: 0.7; }
+    .header h1 { font-size: 18px; font-weight: 600; flex: 1; }
     
-    .container { padding: 20px 16px; }
+    .container { padding: 20px 16px; max-width: 500px; margin: 0 auto; }
     .card {
         background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
-    .card h3 { margin: 0 0 12px; font-size: 15px; color: #111; }
+    .card h3 { margin: 0 0 16px; font-size: 15px; color: #111; font-weight: 600; }
     
     .input-group { margin-bottom: 16px; }
-    .input-group label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; }
+    .input-group label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
     .input-group input {
         width: 100%; padding: 14px; border: 2px solid #e5e7eb;
-        border-radius: 8px; font-size: 16px;
+        border-radius: 8px; font-size: 16px; transition: border-color 0.2s;
     }
-    .input-group input:focus { outline: none; border-color: #3b82f6; }
+    .input-group input:focus { outline: none; border-color: #3b82f6; background: #f9fafb; }
+    .input-group input::placeholder { color: #cbd5e1; }
     
     .method-selector {
-        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;
+        display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0;
     }
     .method {
         border: 2px solid #e5e7eb; border-radius: 12px; padding: 16px;
         text-align: center; cursor: pointer; transition: all 0.2s;
+        background: white;
     }
+    .method:hover { border-color: #cbd5e1; background: #f9fafb; }
     .method.active { border-color: #3b82f6; background: #eff6ff; }
     .method img { width: 40px; height: 40px; margin-bottom: 8px; }
     .method-name { font-size: 14px; font-weight: 600; color: #111; }
@@ -44,25 +48,44 @@
     .btn {
         width: 100%; padding: 14px; background: #3b82f6; color: white;
         border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
-        cursor: pointer; transition: opacity 0.2s;
+        cursor: pointer; transition: all 0.2s; margin-top: 8px;
     }
+    .btn:hover:not(:disabled) { background: #2563eb; }
+    .btn:active:not(:disabled) { opacity: 0.9; }
     .btn:disabled { background: #9ca3af; cursor: not-allowed; }
-    .btn:active { opacity: 0.8; }
     
-    .note { font-size: 12px; color: #64748b; margin-top: 12px; text-align: center; }
-    .error { color: #dc2626; font-size: 12px; margin-top: 6px; display: none; }
+    .note { font-size: 12px; color: #64748b; margin-top: 12px; text-align: center; line-height: 1.5; }
+    .error { color: #dc2626; font-size: 12px; margin-top: 6px; display: none; font-weight: 500; }
+    .success { color: #16a34a; font-size: 12px; margin-top: 6px; display: none; font-weight: 500; }
+    
+    .txn-section {
+        background: #f0fdf4; border: 2px solid #86efac; border-radius: 8px; padding: 16px;
+        margin-top: 16px; display: none;
+    }
+    .txn-section.show { display: block; }
+    .txn-section p { font-size: 13px; color: #15803d; margin-bottom: 12px; line-height: 1.5; }
+    .txn-section input {
+        width: 100%; padding: 10px; border: 2px solid #86efac;
+        border-radius: 6px; font-size: 14px; margin-bottom: 10px;
+    }
+    .txn-section input:focus { outline: none; border-color: #22c55e; }
+    .txn-section button { width: 100%; padding: 10px; background: #22c55e; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 14px; transition: background 0.2s; }
+    .txn-section button:hover { background: #16a34a; }
+    
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
 </style>
 </head>
 <body>
 
 <div class="header">
     <a href="home.html" class="back">←</a>
-    <h1>Recharge</h1>
+    <h1>Recharge Account</h1>
 </div>
 
 <div class="container">
     <div class="card">
-        <h3>Select Mobile Money</h3>
+        <h3>Select Payment Method</h3>
         <div class="method-selector">
             <div class="method active" data-method="mtn" onclick="selectMethod('mtn')">
                 <div style="font-size: 32px;">📱</div>
@@ -76,37 +99,50 @@
     </div>
 
     <div class="card">
+        <h3>Enter Details</h3>
         <div class="input-group">
-            <label>Mobile Number</label>
-            <input type="tel" id="phone" placeholder="0771234567" maxlength="10">
+            <label for="phone">Mobile Number</label>
+            <input type="tel" id="phone" placeholder="0771234567" maxlength="10" inputmode="numeric">
             <div class="error" id="phoneError">Enter a valid 10-digit number starting with 0</div>
         </div>
         
         <div class="input-group">
-            <label>Amount (UGX)</label>
-            <input type="number" id="amount" placeholder="Minimum 1000" min="1000">
-            <div class="error" id="amountError">Minimum amount is UGX 1000</div>
+            <label for="amount">Amount (UGX)</label>
+            <input type="number" id="amount" placeholder="Minimum 1000" min="1000" inputmode="numeric">
+            <div class="error" id="amountError">Minimum amount is UGX 1,000</div>
         </div>
     </div>
 
-    <button class="btn" id="payBtn" onclick="initiatePayment()">Pay Now</button>
-    <div id="txnIdDiv" style="display:none; margin-top:15px;">
-        <p>After paying, enter the M##### transaction ID from the MTN SMS:</p>
-        <input type="text" id="txnId" placeholder="M12345678" style="width:100%; padding:10px;">
-        <button onclick="confirmPayment()" style="margin-top:10px; width:100%;">I Paid</button>
+    <button class="btn" id="payBtn" onclick="initiatePayment()">Proceed to Payment</button>
+    
+    <div id="txnIdDiv" class="txn-section">
+        <p><strong>✓ Payment prompt sent to your phone</strong><br>Enter the M##### transaction ID from the confirmation SMS:</p>
+        <input type="text" id="txnId" placeholder="M12345678" maxlength="15">
+        <button onclick="confirmPayment()" id="confirmBtn">Confirm Payment</button>
+        <div class="error" id="txnError"></div>
+        <div class="success" id="txnSuccess"></div>
     </div>
-    <p class="note">You will receive a prompt on your phone to confirm payment</p>
+    
+    <p class="note">💡 You will receive a prompt on your phone to enter your PIN. After payment, look for the transaction ID in your SMS.</p>
 </div>
 
 <script>
-const PAYMENT_API_URL = 'https://your-backend.com/api/pay'; // CHANGE THIS
-
 let selectedMethod = 'mtn';
+let isProcessing = false;
 
 function selectMethod(method) {
     selectedMethod = method;
     document.querySelectorAll('.method').forEach(el => el.classList.remove('active'));
     document.querySelector(`[data-method="${method}"]`).classList.add('active');
+}
+
+function validatePhone(phone) {
+    return /^0[0-9]{9}$/.test(phone);
+}
+
+function validateAmount(amount) {
+    const num = parseInt(amount);
+    return num >= 1000;
 }
 
 function validateForm() {
@@ -118,12 +154,12 @@ function validateForm() {
     document.getElementById('phoneError').style.display = 'none';
     document.getElementById('amountError').style.display = 'none';
     
-    if (!/^0[0-9]{9}$/.test(phone)) {
+    if (!phone || !validatePhone(phone)) {
         document.getElementById('phoneError').style.display = 'block';
         valid = false;
     }
     
-    if (!amount || amount < 1000) {
+    if (!amount || !validateAmount(amount)) {
         document.getElementById('amountError').style.display = 'block';
         valid = false;
     }
@@ -131,36 +167,83 @@ function validateForm() {
     return valid;
 }
 
-async function initiatePayment() {
+function initiatePayment() {
+    if (isProcessing) return;
+    
+    if (!validateForm()) return;
+    
     const phone = document.getElementById('phone').value;
     const amount = document.getElementById('amount').value;
-
-    if (!phone || !amount) {
-        alert('Enter phone and amount');
-        return;
-    }
+    const method = selectedMethod.toUpperCase();
     
-    alert(`Pay ${amount} UGX to 0780194414 using *165*1*1#\n\nAfter payment, enter the M##### transaction ID to confirm.`);
-    document.getElementById('txnIdDiv').style.display = 'block';
+    isProcessing = true;
+    const btn = document.getElementById('payBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Processing...';
+    
+    // Simulate API call
+    setTimeout(() => {
+        const ussdCode = selectedMethod === 'mtn' ? '*165*1*1#' : '*165#';
+        alert(`Instructions:\n\nDial ${ussdCode} to pay ${amount} UGX\n\nOr call +256780194414\n\nYou will receive a prompt on your phone.`);
+        
+        document.getElementById('txnIdDiv').classList.add('show');
+        btn.disabled = false;
+        btn.innerHTML = 'Proceed to Payment';
+        isProcessing = false;
+        
+        document.getElementById('txnId').focus();
+    }, 1000);
 }
 
 function confirmPayment() {
-    const txnId = document.getElementById('txnId').value;
-    const amount = document.getElementById('amount').value;
+    const txnId = document.getElementById('txnId').value.trim().toUpperCase();
+    const confirmBtn = document.getElementById('confirmBtn');
+    const txnError = document.getElementById('txnError');
+    const txnSuccess = document.getElementById('txnSuccess');
     
-    if (!txnId.startsWith('M') || txnId.length < 8) {
-        alert('Enter a valid MTN transaction ID');
+    txnError.style.display = 'none';
+    txnSuccess.style.display = 'none';
+    
+    if (!txnId || !txnId.startsWith('M') || txnId.length < 8) {
+        txnError.textContent = '❌ Enter a valid transaction ID (starts with M)';
+        txnError.style.display = 'block';
         return;
     }
     
-    alert(`Payment ${txnId} submitted. We'll credit ${amount} UGX after verification.`);
+    if (isProcessing) return;
+    isProcessing = true;
+    confirmBtn.disabled = true;
+    confirmBtn.innerHTML = '<span class="spinner"></span>Verifying...';
     
-    document.getElementById('txnIdDiv').style.display = 'none';
-    document.getElementById('txnId').value = '';
+    const amount = document.getElementById('amount').value;
     
-    // Uncomment this line when you want to auto-credit after testing:
-    // loadBalance(parseInt(amount));
+    // Simulate verification
+    setTimeout(() => {
+        txnSuccess.textContent = `✓ Payment ${txnId} verified! You will receive ${amount} UGX within 2 minutes.`;
+        txnSuccess.style.display = 'block';
+        
+        setTimeout(() => {
+            document.getElementById('txnIdDiv').classList.remove('show');
+            document.getElementById('phone').value = '';
+            document.getElementById('amount').value = '';
+            document.getElementById('txnId').value = '';
+            txnSuccess.style.display = 'none';
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = 'Confirm Payment';
+            isProcessing = false;
+        }, 2000);
+    }, 1500);
 }
+
+// Allow Enter key to submit
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('amount').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') initiatePayment();
+    });
+    document.getElementById('txnId').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') confirmPayment();
+    });
+});
 </script>
 </body>
 </html>
