@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Withdraw - EXPO INVESTMENT</title>
+<style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: #f5f7fa; color: #111; }
+    
+    .header {
+        background: white; padding: 15px 16px; display: flex; align-items: center;
+        border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 10;
+    }
+    .back { font-size: 24px; text-decoration: none; color: #111; margin-right: 12px; cursor: pointer; transition: opacity 0.2s; }
+    .back:hover { opacity: 0.7; }
+    .header h1 { font-size: 18px; font-weight: 600; flex: 1; }
+    
+    .container { padding: 20px 16px; max-width: 500px; margin: 0 auto; }
+    .card {
+        background: white; border-radius: 12px; padding: 20px; margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .card h3 { margin: 0 0 16px; font-size: 15px; color: #111; font-weight: 600; }
+    
+    .balance-display {
+        background: linear-gradient(90deg, #06b6d4, #0891b2);
+        color: white; border-radius: 12px; padding: 20px; margin-bottom: 16px;
+        text-align: center;
+    }
+    .balance-amount { font-size: 32px; font-weight: 700; margin-bottom: 4px; }
+    .balance-label { font-size: 14px; opacity: 0.9; }
+    
+    .input-group { margin-bottom: 16px; }
+    .input-group label { display: block; font-size: 13px; color: #64748b; margin-bottom: 6px; font-weight: 500; }
+    .input-group input {
+        width: 100%; padding: 14px; border: 2px solid #e5e7eb;
+        border-radius: 8px; font-size: 16px; transition: border-color 0.2s;
+    }
+    .input-group input:focus { outline: none; border-color: #0891b2; background: #f9fafb; }
+    .input-group input::placeholder { color: #cbd5e1; }
+    
+    .info-box {
+        background: #f0fdf4; border: 2px solid #86efac; border-radius: 8px;
+        padding: 12px; margin-bottom: 16px; font-size: 13px; color: #15803d;
+    }
+    .info-box strong { display: block; margin-bottom: 4px; }
+    
+    .warning-box {
+        background: #fef2f2; border: 2px solid #fecaca; border-radius: 8px;
+        padding: 12px; margin-bottom: 16px; font-size: 13px; color: #991b1b;
+    }
+    .warning-box strong { display: block; margin-bottom: 4px; }
+    
+    .btn {
+        width: 100%; padding: 14px; background: #06b6d4; color: white;
+        border: none; border-radius: 8px; font-size: 16px; font-weight: 600;
+        cursor: pointer; transition: all 0.2s; margin-top: 8px;
+    }
+    .btn:hover:not(:disabled) { background: #0891b2; }
+    .btn:active:not(:disabled) { opacity: 0.9; }
+    .btn:disabled { background: #9ca3af; cursor: not-allowed; }
+    
+    .error { color: #dc2626; font-size: 12px; margin-top: 6px; display: none; font-weight: 500; }
+    .success { color: #16a34a; font-size: 12px; margin-top: 6px; display: none; font-weight: 500; }
+    
+    .pending-section {
+        background: #fef3c7; border: 2px solid #fcd34d; border-radius: 8px; padding: 16px;
+        margin-top: 16px;
+    }
+    .pending-item {
+        background: white; border-radius: 8px; padding: 12px; margin-bottom: 8px;
+    }
+    .pending-item:last-child { margin-bottom: 0; }
+    .pending-amount { font-weight: 700; color: #06b6d4; }
+    .pending-date { font-size: 12px; color: #64748b; }
+    .pending-status { font-size: 12px; color: #f59e0b; font-weight: 600; margin-top: 4px; }
+    
+    .confirmation-section {
+        background: #f0fdf4; border: 2px solid #86efac; border-radius: 8px; padding: 16px;
+        margin-top: 16px; display: none;
+    }
+    .confirmation-section.show { display: block; }
+    .confirmation-section p { font-size: 13px; color: #15803d; margin-bottom: 12px; line-height: 1.6; }
+    .confirmation-detail { background: white; padding: 10px; border-radius: 6px; margin-bottom: 10px; font-size: 12px; }
+    .confirmation-detail strong { display: inline-block; width: 100px; }
+    
+    .spinner { display: inline-block; width: 16px; height: 16px; border: 3px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: white; animation: spin 1s linear infinite; margin-right: 8px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="header">
+    <a href="home.html" class="back">←</a>
+    <h1>Withdraw Funds</h1>
+</div>
+
+<div class="container">
+    <!-- Current Balance -->
+    <div class="balance-display">
+        <div class="balance-amount" id="balanceAmount">UGX 0</div>
+        <div class="balance-label">Available Balance</div>
+    </div>
+
+    <!-- Information Boxes -->
+    <div class="info-box">
+        <strong>✓ Withdrawal Info</strong>
+        Minimum withdrawal: UGX 5,000<br>
+        Withdrawals are manually approved by admin
+    </div>
+
+    <div class="warning-box">
+        <strong>⚠ Withdrawal Account</strong>
+        All withdrawals go to: <strong>0780194414</strong>
+    </div>
+
+    <!-- Withdrawal Form -->
+    <div class="card">
+        <h3>Enter Withdrawal Details</h3>
+        
+        <div class="input-group">
+            <label for="phone">Mobile Number (MTN/Airtel)</label>
+            <input type="tel" id="phone" placeholder="0771234567" maxlength="10" inputmode="numeric">
+            <div class="error" id="phoneError">Enter a valid 10-digit number starting with 0</div>
+        </div>
+
+        <div class="input-group">
+            <label for="amount">Amount (UGX)</label>
+            <input type="number" id="amount" placeholder="Minimum 5000" min="5000" inputmode="numeric">
+            <div class="error" id="amountError">Minimum withdrawal is UGX 5,000</div>
+        </div>
+    </div>
+
+    <button class="btn" id="withdrawBtn" onclick="initiateWithdrawal()">Request Withdrawal</button>
+
+    <!-- Pending Withdrawals -->
+    <div class="pending-section" id="pendingSection" style="display: none;">
+        <h3 style="margin-bottom: 12px; font-size: 14px;">Pending Withdrawals</h3>
+        <div id="pendingList"></div>
+    </div>
+
+    <!-- Confirmation Section -->
+    <div class="confirmation-section" id="confirmationSection">
+        <p><strong>✓ Withdrawal Request Submitted</strong><br>Your withdrawal request has been received and is pending manual approval.</p>
+        
+        <div class="confirmation-detail">
+            <strong>Amount:</strong> <span id="confirmAmount"></span>
+        </div>
+        <div class="confirmation-detail">
+            <strong>Phone:</strong> <span id="confirmPhone"></span>
+        </div>
+        <div class="confirmation-detail">
+            <strong>Status:</strong> <span style="color: #f59e0b; font-weight: 600;">⏳ Pending Approval</span>
+        </div>
+        <div class="confirmation-detail">
+            <strong>Request ID:</strong> <span id="confirmId"></span>
+        </div>
+
+        <button class="btn" onclick="resetForm()" style="background: #3b82f6;">Done</button>
+    </div>
+</div>
+
+<script>
+// Redirect if not logged in
+if (!localStorage.getItem('isLoggedIn')) {
+    window.location.href = 'index.html';
+}
+
+// Load user balance
+function loadBalance() {
+    const balance = parseFloat(localStorage.getItem('balance') || 0);
+    const formattedBalance = new Intl.NumberFormat('en-US').format(Math.floor(balance));
+    document.getElementById('balanceAmount').textContent = 'UGX ' + formattedBalance;
+    return balance;
+}
+
+// Get current user
+function getCurrentUser() {
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    return user.email || 'unknown';
+}
+
+// Display pending withdrawals for current user
+function displayPendingWithdrawals() {
+    const allWithdrawals = JSON.parse(localStorage.getItem('allWithdrawals') || '[]');
+    const currentUser = getCurrentUser();
+    
+    // Filter pending withdrawals for current user
+    const userPending = allWithdrawals.filter(w => w.userEmail === currentUser && w.status === 'pending');
+    
+    if (userPending.length === 0) {
+        document.getElementById('pendingSection').style.display = 'none';
+        return;
+    }
+
+    document.getElementById('pendingSection').style.display = 'block';
+    const pendingList = document.getElementById('pendingList');
+    pendingList.innerHTML = '';
+
+    userPending.forEach(withdrawal => {
+        const item = document.createElement('div');
+        item.className = 'pending-item';
+        const formattedAmount = new Intl.NumberFormat('en-US').format(withdrawal.amount);
+        item.innerHTML = `
+            <div class="pending-amount">UGX ${formattedAmount}</div>
+            <div class="pending-date">Requested: ${withdrawal.date}</div>
+            <div class="pending-status">⏳ Pending Approval</div>
+        `;
+        pendingList.appendChild(item);
+    });
+}
+
+// Validate phone
+function validatePhone(phone) {
+    return /^0[0-9]{9}$/.test(phone);
+}
+
+// Validate amount
+function validateAmount(amount, balance) {
+    const num = parseFloat(amount);
+    return num >= 5000 && num <= balance;
+}
+
+// Validate form
+function validateForm() {
+    let valid = true;
+    const phone = document.getElementById('phone').value.trim();
+    const amount = document.getElementById('amount').value.trim();
+    const balance = loadBalance();
+
+    document.getElementById('phoneError').style.display = 'none';
+    document.getElementById('amountError').style.display = 'none';
+
+    if (!phone || !validatePhone(phone)) {
+        document.getElementById('phoneError').style.display = 'block';
+        valid = false;
+    }
+
+    if (!amount || !validateAmount(amount, balance)) {
+        if (!amount) {
+            document.getElementById('amountError').textContent = 'Please enter an amount';
+        } else if (parseFloat(amount) < 5000) {
+            document.getElementById('amountError').textContent = 'Minimum withdrawal is UGX 5,000';
+        } else {
+            document.getElementById('amountError').textContent = 'Insufficient balance';
+        }
+        document.getElementById('amountError').style.display = 'block';
+        valid = false;
+    }
+
+    return valid;
+}
+
+// Initiate withdrawal
+function initiateWithdrawal() {
+    if (!validateForm()) return;
+
+    const phone = document.getElementById('phone').value.trim();
+    const amount = parseFloat(document.getElementById('amount').value.trim());
+    const btn = document.getElementById('withdrawBtn');
+    
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span>Processing...';
+
+    // Simulate processing
+    setTimeout(() => {
+        // Create withdrawal request
+        const withdrawalRequest = {
+            id: 'WR' + Date.now(),
+            userEmail: getCurrentUser(),
+            amount: amount,
+            phone: phone,
+            date: new Date().toLocaleString(),
+            status: 'pending',
+            adminPhone: '0780194414'
+        };
+
+        // Add to all withdrawals
+        let allWithdrawals = JSON.parse(localStorage.getItem('allWithdrawals') || '[]');
+        allWithdrawals.push(withdrawalRequest);
+        localStorage.setItem('allWithdrawals', JSON.stringify(allWithdrawals));
+
+        // Add transaction to home page
+        let transactions = JSON.parse(localStorage.getItem('transactions') || '[]');
+        transactions.push({
+            id: Math.max(...transactions.map(t => t.id || 0), 0) + 1,
+            type: 'withdrawal',
+            amount: amount,
+            status: 'pending',
+            date: new Date().toLocaleString(),
+            description: 'Withdrawal request - Pending approval'
+        });
+        localStorage.setItem('transactions', JSON.stringify(transactions));
+
+        // Show confirmation
+        document.getElementById('confirmAmount').textContent = 'UGX ' + new Intl.NumberFormat('en-US').format(amount);
+        document.getElementById('confirmPhone').textContent = phone;
+        document.getElementById('confirmId').textContent = withdrawalRequest.id;
+        document.getElementById('confirmationSection').classList.add('show');
+
+        btn.disabled = false;
+        btn.innerHTML = 'Request Withdrawal';
+    }, 1500);
+}
+
+// Reset form
+function resetForm() {
+    document.getElementById('phone').value = '';
+    document.getElementById('amount').value = '';
+    document.getElementById('confirmationSection').classList.remove('show');
+    loadBalance();
+    displayPendingWithdrawals();
+}
+
+// Initialize on page load
+loadBalance();
+displayPendingWithdrawals();
+</script>
+
+</body>
+</html>
