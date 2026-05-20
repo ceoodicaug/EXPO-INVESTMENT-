@@ -254,13 +254,13 @@ function initializeUserTransactions() {
             {
                 id: 1,
                 type: 'recharge',
-                amount: 50000,
+                amount: 3000,
                 date: new Date(Date.now() - 7 * 24 * 3600000).toLocaleString(),
                 description: 'Account recharge'
             }
         ];
         localStorage.setItem(txnKey, JSON.stringify(initialTransactions));
-        localStorage.setItem('balance_' + userId, '50000');
+        localStorage.setItem('balance_' + userId, '3000');
     }
 }
 
