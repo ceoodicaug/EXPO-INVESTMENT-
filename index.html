@@ -374,6 +374,39 @@
     </div>
 
     <script>
+        // Initialize registered users list from localStorage
+        function initializeRegisteredUsers() {
+            if (!localStorage.getItem('registeredUsers')) {
+                localStorage.setItem('registeredUsers', JSON.stringify([]));
+            }
+        }
+
+        // Check if email is already registered
+        function isEmailRegistered(email) {
+            const registeredUsers = JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+            return registeredUsers.some(user => user.email.toLowerCase() === email.toLowerCase());
+        }
+
+        // Get all registered users
+        function getRegisteredUsers() {
+            return JSON.parse(localStorage.getItem('registeredUsers') || '[]');
+        }
+
+        // Add new user to registered list
+        function registerNewUser(userData) {
+            const registeredUsers = getRegisteredUsers();
+            registeredUsers.push(userData);
+            localStorage.setItem('registeredUsers', JSON.stringify(registeredUsers));
+        }
+
+        // Verify login credentials
+        function verifyLoginCredentials(email, password) {
+            const registeredUsers = getRegisteredUsers();
+            return registeredUsers.find(user => 
+                user.email.toLowerCase() === email.toLowerCase() && user.password === password
+            );
+        }
+
         function switchForm(formType) {
             const registerContainer = document.getElementById('registerContainer');
             const loginContainer = document.getElementById('loginContainer');
@@ -433,6 +466,12 @@
                 isValid = false;
             }
 
+            // CHECK IF EMAIL IS ALREADY REGISTERED
+            if (isEmailRegistered(email)) {
+                showError('emailError', '⚠️ This email is already registered! Please use a different email or log in.');
+                isValid = false;
+            }
+
             if (!contact.match(/^[\d\s\-\+\(\)]{10,}$/)) {
                 showError('contactError', 'Please enter a valid contact number');
                 isValid = false;
@@ -459,9 +498,15 @@
                     lastName,
                     email,
                     contact,
-                    nationalId
+                    nationalId,
+                    password,
+                    registeredAt: new Date().toISOString()
                 };
 
+                // Register the new user
+                registerNewUser(userData);
+
+                // Set current logged in user
                 localStorage.setItem('user', JSON.stringify(userData));
                 localStorage.setItem('isLoggedIn', 'true');
 
@@ -494,7 +539,17 @@
             }
 
             if (isValid) {
+                // VERIFY CREDENTIALS AGAINST REGISTERED USERS
+                const user = verifyLoginCredentials(email, password);
+
+                if (!user) {
+                    showError('loginEmailError', '❌ Invalid email or password. Please check your credentials.');
+                    return;
+                }
+
+                // Login successful
                 localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('user', JSON.stringify(user));
                 localStorage.setItem('userEmail', email);
                 
                 if (rememberMe) {
@@ -509,6 +564,9 @@
                 }, 2000);
             }
         }
+
+        // Initialize on page load
+        initializeRegisteredUsers();
     </script>
 </body>
 </html>
