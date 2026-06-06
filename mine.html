@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPO INVESTMENT - Mine</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+body{
+background:#f5f7fa;
+padding:20px;
+}
+
+.back{
+display:inline-block;
+margin-bottom:15px;
+text-decoration:none;
+font-size:18px;
+}
+
+.profile-card{
+background:white;
+padding:20px;
+border-radius:12px;
+text-align:center;
+margin-bottom:15px;
+}
+
+.avatar{
+width:80px;
+height:80px;
+border-radius:50%;
+background:#3b82f6;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:30px;
+font-weight:bold;
+margin:auto;
+margin-bottom:10px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:12px;
+margin-bottom:15px;
+}
+
+.balance{
+font-size:28px;
+font-weight:bold;
+color:#10b981;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+margin-top:10px;
+}
+
+.logout{
+background:#ef4444;
+color:white;
+}
+
+.home{
+background:#3b82f6;
+color:white;
+}
+
+.info{
+margin-top:10px;
+font-size:14px;
+color:#6b7280;
+}
+</style>
+</head>
+
+<body>
+
+<a href="home.html" class="back">← Back</a>
+
+<div class="profile-card">
+
+<div class="avatar" id="avatar">
+U
+</div>
+
+<h2 id="fullName">
+User
+</h2>
+
+<div class="info" id="email">
+user@email.com
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Available Balance</h3>
+
+<div
+class="balance"
+id="balance">
+UGX 0
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Account Information</h3>
+
+<p class="info">
+Status: Active
+</p>
+
+<p class="info">
+Membership: Standard
+</p>
+
+<p class="info">
+Platform: EXPO INVESTMENT
+</p>
+
+</div>
+
+<button
+class="home"
+onclick="window.location.href='home.html'">
+Go Home
+</button>
+
+<button
+class="logout"
+onclick="logout()">
+Logout
+</button>
+
+<script>
+
+if(!localStorage.getItem('isLoggedIn')){
+window.location.href='index.html';
+}
+
+const user =
+JSON.parse(
+localStorage.getItem('user') || '{}'
+);
+
+const userId =
+user.email || 'guest';
+
+const balance =
+Number(
+localStorage.getItem(
+'balance_' + userId
+) || 0
+);
+
+document.getElementById(
+'balance'
+).textContent =
+'UGX ' +
+new Intl.NumberFormat()
+.format(balance);
+
+document.getElementById(
+'fullName'
+).textContent =
+(user.firstName || '') +
+' ' +
+(user.lastName || '');
+
+document.getElementById(
+'email'
+).textContent =
+user.email || '';
+
+document.getElementById(
+'avatar'
+).textContent =
+(user.firstName || 'U')
+.charAt(0)
+.toUpperCase();
+
+function logout(){
+
+localStorage.removeItem(
+'isLoggedIn'
+);
+
+localStorage.removeItem(
+'user'
+);
+
+window.location.href =
+'index.html';
+}
+
+</script>
+
+</body>
+</html>
