@@ -226,140 +226,168 @@
 </div>
 
 <script>
+
 // Redirect if not logged in
 if (!localStorage.getItem('isLoggedIn')) {
     window.location.href = 'index.html';
 }
 
-// Load username
+// Current user
 const user = JSON.parse(localStorage.getItem('user') || '{}');
-if (user.firstName) {
-    document.getElementById('username').textContent = user.firstName + ' ' + (user.lastName || '');
-    document.getElementById('avatar').textContent = user.firstName.charAt(0).toUpperCase();
-}
 
-// Initialize transactions on first login
-function initializeUserTransactions() {
-    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
-    const txnKey = 'transactions_' + userId;
-    
-    if (!localStorage.getItem(txnKey)) {
-        const initialTransactions = [
-            {
-                id: 1,
-                type: 'recharge',
-                amount: 3000,
-                date: new Date(Date.now() - 7 * 24 * 3600000).toLocaleString(),
-                description: 'Account recharge'
-            }
-        ];
-        localStorage.setItem(txnKey, JSON.stringify(initialTransactions));
-        localStorage.setItem('balance_' + userId, '3000');
-    }
-}
+const userId = user.email || 'guest';
+const balanceKey = 'balance_' + userId;
+const transactionKey = 'transactions_' + userId;
 
-// Get user transactions
-function getUserTransactions() {
-    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
-    const txnKey = 'transactions_' + userId;
-    return JSON.parse(localStorage.getItem(txnKey) || '[]');
-}
+// User display
+document.getElementById('username').textContent =
+    (user.firstName || 'User') +
+    (user.lastName ? ' ' + user.lastName : '');
 
-// Get user balance
-function getUserBalance() {
-    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
-    return parseFloat(localStorage.getItem('balance_' + userId) || 0);
-}
+document.getElementById('avatar').textContent =
+    (user.firstName || 'U').charAt(0).toUpperCase();
 
-// Update balance display
+// Balance
 function updateBalanceDisplay() {
-    const balance = getUserBalance();
-    const formattedBalance = new Intl.NumberFormat('en-US').format(Math.floor(balance));
-    document.getElementById('availableBalance').textContent = 'UGX ' + formattedBalance;
-    document.getElementById('cumulativeIncome').textContent = 'UGX ' + formattedBalance;
+
+    const balance =
+        Number(localStorage.getItem(balanceKey) || 0);
+
+    const formatted =
+        new Intl.NumberFormat('en-US')
+        .format(balance);
+
+    document.getElementById('availableBalance')
+        .textContent = 'UGX ' + formatted;
+
+    document.getElementById('cumulativeIncome')
+        .textContent = 'UGX ' + formatted;
 }
 
-// Display transactions with scroll-to-bottom effect
+// Transactions
+function getTransactions() {
+
+    return JSON.parse(
+        localStorage.getItem(transactionKey) || '[]'
+    );
+
+}
+
 function displayTransactions() {
-    const transactions = getUserTransactions();
-    const container = document.getElementById('dynamicContainer');
-    
+
+    const transactions =
+        getTransactions();
+
+    const container =
+        document.getElementById('dynamicContainer');
+
     container.innerHTML = '';
-    
+
     if (transactions.length === 0) {
-        container.innerHTML = '<div class="empty-state">No transactions yet</div>';
+
+        container.innerHTML =
+            '<div class="empty-state">No transactions yet</div>';
+
         return;
     }
-    
-    // Display latest 10 transactions (newest first)
-    const latestTransactions = transactions.slice(-10).reverse();
-    
-    latestTransactions.forEach((txn, index) => {
-        const item = document.createElement('div');
-        item.className = 'dynamic-item';
-        
-        let emoji = '✓';
-        if (txn.type === 'recharge') emoji = '💰';
-        if (txn.type === 'rebate') emoji = '🎁';
-        if (txn.type === 'income') emoji = '📈';
-        if (txn.type === 'withdraw') emoji = '🏦';
-        
-        const formattedAmount = new Intl.NumberFormat('en-US').format(txn.amount);
-        
+
+    const latest =
+        transactions.slice(-10).reverse();
+
+    latest.forEach(txn => {
+
+        const item =
+            document.createElement('div');
+
+        item.className =
+            'dynamic-item';
+
+        let icon = '💰';
+
+        if (txn.type === 'withdraw')
+            icon = '🏦';
+
+        if (txn.type === 'income')
+            icon = '📈';
+
+        if (txn.type === 'rebate')
+            icon = '🎁';
+
+        const amount =
+            new Intl.NumberFormat('en-US')
+            .format(txn.amount);
+
         item.innerHTML = `
             <div class="icon"></div>
             <div>
-                <div class="text">${emoji} ${txn.description} - UGX ${formattedAmount}</div>
-                <div class="time">${txn.date}</div>
+                <div class="text">
+                    ${icon}
+                    ${txn.description}
+                    - UGX ${amount}
+                </div>
+                <div class="time">
+                    ${txn.date}
+                </div>
             </div>
         `;
-        
+
         container.appendChild(item);
+
     });
+
 }
 
-// Add transaction function (called from Recharge.html)
-window.addTransaction = function(type, amount, description) {
-    const userId = user.email || 'user_' + Math.random().toString(36).substr(2, 9);
-    const txnKey = 'transactions_' + userId;
-    const balanceKey = 'balance_' + userId;
-    
-    let transactions = JSON.parse(localStorage.getItem(txnKey) || '[]');
-    
-    const newTxn = {
-        id: transactions.length + 1,
+// Global function
+window.addTransaction = function(
+    type,
+    amount,
+    description
+) {
+
+    let transactions =
+        getTransactions();
+
+    transactions.push({
+        id: Date.now(),
         type: type,
         amount: amount,
-        date: new Date().toLocaleString(),
-        description: description
-    };
-    
-    transactions.push(newTxn);
-    localStorage.setItem(txnKey, JSON.stringify(transactions));
-    
-    // Update balance
-    let balance = parseFloat(localStorage.getItem(balanceKey) || 0);
-    balance += amount;
-    localStorage.setItem(balanceKey, balance);
-    
-    // Refresh if home page is open
-    if (document.getElementById('dynamicContainer')) {
-        displayTransactions();
-        updateBalanceDisplay();
+        description: description,
+        date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem(
+        transactionKey,
+        JSON.stringify(transactions)
+    );
+
+    let balance =
+        Number(localStorage.getItem(balanceKey) || 0);
+
+    if (type === 'withdraw') {
+        balance -= amount;
+    } else {
+        balance += amount;
     }
+
+    localStorage.setItem(
+        balanceKey,
+        balance
+    );
+
+    updateBalanceDisplay();
+    displayTransactions();
 };
 
 // Initial load
-initializeUserTransactions();
 updateBalanceDisplay();
 displayTransactions();
 
-// Refresh every 5 seconds to catch updates from other tabs
+// Refresh every 3 seconds
 setInterval(() => {
-    displayTransactions();
-    updateBalanceDisplay();
-}, 5000);
-</script>
 
-</body>
-</html>
+    updateBalanceDisplay();
+    displayTransactions();
+
+}, 3000);
+
+</script>
