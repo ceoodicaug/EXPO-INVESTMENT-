@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPO INVESTMENT - Login</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+}
+
+body{
+background:#f5f7fa;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+width:100%;
+max-width:400px;
+}
+
+.logo{
+text-align:center;
+margin-bottom:30px;
+}
+
+.logo h1{
+color:#1e3a8a;
+font-size:32px;
+}
+
+.logo p{
+color:#6b7280;
+font-size:14px;
+margin-top:5px;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:12px;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
+
+input{
+width:100%;
+padding:14px;
+margin-bottom:12px;
+border:1px solid #d1d5db;
+border-radius:8px;
+font-size:15px;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+background:#3b82f6;
+color:white;
+font-weight:600;
+border-radius:8px;
+cursor:pointer;
+}
+
+button:hover{
+background:#2563eb;
+}
+
+.switch{
+margin-top:15px;
+text-align:center;
+font-size:14px;
+}
+
+.switch a{
+color:#3b82f6;
+text-decoration:none;
+}
+
+.hidden{
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">
+<h1>EXPO INVESTMENT</h1>
+<p>Technology Changes Life</p>
+</div>
+
+<div class="card">
+
+<div id="loginForm">
+
+<input type="email" id="loginEmail" placeholder="Email">
+
+<input type="password" id="loginPassword" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<div class="switch">
+Don't have an account?
+<a href="#" onclick="showRegister()">Register</a>
+</div>
+
+</div>
+
+<div id="registerForm" class="hidden">
+
+<input type="text" id="firstName" placeholder="First Name">
+
+<input type="text" id="lastName" placeholder="Last Name">
+
+<input type="email" id="registerEmail" placeholder="Email">
+
+<input type="password" id="registerPassword" placeholder="Password">
+
+<button onclick="register()">Create Account</button>
+
+<div class="switch">
+Already have an account?
+<a href="#" onclick="showLogin()">Login</a>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function showRegister(){
+document.getElementById('loginForm').classList.add('hidden');
+document.getElementById('registerForm').classList.remove('hidden');
+}
+
+function showLogin(){
+document.getElementById('registerForm').classList.add('hidden');
+document.getElementById('loginForm').classList.remove('hidden');
+}
+
+function register(){
+
+const firstName =
+document.getElementById('firstName').value.trim();
+
+const lastName =
+document.getElementById('lastName').value.trim();
+
+const email =
+document.getElementById('registerEmail').value.trim();
+
+const password =
+document.getElementById('registerPassword').value.trim();
+
+if(!firstName || !email || !password){
+alert('Please fill all required fields');
+return;
+}
+
+const user = {
+firstName,
+lastName,
+email,
+password
+};
+
+localStorage.setItem(
+'user_' + email,
+JSON.stringify(user)
+);
+
+alert('Account created successfully');
+
+showLogin();
+}
+
+function login(){
+
+const email =
+document.getElementById('loginEmail').value.trim();
+
+const password =
+document.getElementById('loginPassword').value.trim();
+
+const savedUser =
+JSON.parse(
+localStorage.getItem('user_' + email)
+);
+
+if(!savedUser){
+alert('User not found');
+return;
+}
+
+if(savedUser.password !== password){
+alert('Invalid password');
+return;
+}
+
+localStorage.setItem(
+'user',
+JSON.stringify(savedUser)
+);
+
+localStorage.setItem(
+'isLoggedIn',
+'true'
+);
+
+window.location.href='home.html';
+}
+
+</script>
+
+</body>
+</html>
