@@ -1,1 +1,242 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPO INVESTMENT ADMIN</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+margin:0;
+background:#0f172a;
+color:white;
+}
+
+header{
+background:#111827;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+.cards{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+gap:15px;
+}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+text-align:center;
+}
+
+.card h2{
+margin:0;
+color:#22c55e;
+}
+
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+background:#1e293b;
+}
+
+th,td{
+padding:12px;
+border:1px solid #334155;
+text-align:center;
+}
+
+button{
+padding:8px 12px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.approve{
+background:#22c55e;
+color:white;
+}
+
+.reject{
+background:red;
+color:white;
+}
+
+.logout{
+background:#ef4444;
+color:white;
+margin-top:20px;
+}
+
+.login-box{
+max-width:400px;
+margin:100px auto;
+background:#1e293b;
+padding:20px;
+border-radius:10px;
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:none;
+border-radius:5px;
+}
+
+.hidden{
+display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div id="loginPage" class="login-box">
+<h2>Admin Login</h2>
+
+<input type="text" id="username" placeholder="Username">
+<input type="password" id="password" placeholder="Password">
+
+<button onclick="login()" style="margin-top:15px;width:100%;">
+Login
+</button>
+
+<p id="error"></p>
+</div>
+
+<div id="dashboard" class="hidden">
+
+<header>
+EXPO INVESTMENT ADMIN DASHBOARD
+</header>
+
+<div class="container">
+
+<div class="cards">
+
+<div class="card">
+<h2>125</h2>
+<p>Total Users</p>
+</div>
+
+<div class="card">
+<h2>$15,250</h2>
+<p>Total Deposits</p>
+</div>
+
+<div class="card">
+<h2>$8,900</h2>
+<p>Total Withdrawals</p>
+</div>
+
+<div class="card">
+<h2>12</h2>
+<p>Pending Requests</p>
+</div>
+
+</div>
+
+<h2>Pending Deposits</h2>
+
+<table>
+<tr>
+<th>User</th>
+<th>Amount</th>
+<th>Transaction ID</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>James</td>
+<td>$100</td>
+<td>TXN45871</td>
+<td>
+<button class="approve">Approve</button>
+<button class="reject">Reject</button>
+</td>
+</tr>
+
+<tr>
+<td>Peter</td>
+<td>$50</td>
+<td>TXN11234</td>
+<td>
+<button class="approve">Approve</button>
+<button class="reject">Reject</button>
+</td>
+</tr>
+
+</table>
+
+<h2>Pending Withdrawals</h2>
+
+<table>
+<tr>
+<th>User</th>
+<th>Amount</th>
+<th>Action</th>
+</tr>
+
+<tr>
+<td>Sarah</td>
+<td>$200</td>
+<td>
+<button class="approve">Approve</button>
+<button class="reject">Reject</button>
+</td>
+</tr>
+
+</table>
+
+<button class="logout" onclick="logout()">
+Logout
+</button>
+
+</div>
+</div>
+
+<script>
+
+function login(){
+
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+if(user==="admin" && pass==="ExpoAdmin123"){
+
+document.getElementById("loginPage").classList.add("hidden");
+document.getElementById("dashboard").classList.remove("hidden");
+
+}else{
+
+document.getElementById("error").innerHTML="Invalid login details";
+
+}
+
+}
+
+function logout(){
+
+document.getElementById("dashboard").classList.add("hidden");
+document.getElementById("loginPage").classList.remove("hidden");
+
+}
+
+</script>
+
+</body>
+  </html>
