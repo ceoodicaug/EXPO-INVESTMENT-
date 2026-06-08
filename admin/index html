@@ -70,7 +70,7 @@ td,th{border:1px solid #ddd;padding:8px;}
 <script>
 // ================= SUPABASE =================
 const supabaseUrl = "https://ueylvupimetgerzlygco.supabase.co";
-const supabaseKey = "YOUR_SUPABASE_ANON_KEY"; // PUT YOUR REAL KEY HERE
+const supabaseKey = "sb_publishable_bQFc2sK-G3Pr666c9omNUg_z3rD5rpn"; // PUT YOUR REAL KEY HERE
 
 const client = supabase.createClient(supabaseUrl, supabaseKey);
 
