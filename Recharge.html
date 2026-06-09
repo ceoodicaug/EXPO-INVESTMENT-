@@ -128,35 +128,36 @@ button:hover{
 </div>
 
 <script>
-document.getElementById("depositForm").addEventListener("submit", function(e){
+const SUPABASE_URL = "https://YOUR_PROJECT.supabase.co";
+const SUPABASE_KEY = "YOUR_ANON_KEY";
 
+document.getElementById("depositForm").addEventListener("submit", async function(e){
     e.preventDefault();
 
     const depositData = {
         phone: document.getElementById("phone").value,
         amount: document.getElementById("amount").value,
-        transactionId: document.getElementById("transactionId").value,
-        status: "Pending",
-        date: new Date().toLocaleString()
+        transaction_id: document.getElementById("transactionId").value,
+        status: "pending"
     };
 
-    // Demo storage
-    let deposits =
-        JSON.parse(localStorage.getItem("deposits")) || [];
+    const res = await fetch(SUPABASE_URL + "/rest/v1/deposits", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "apikey": SUPABASE_KEY,
+            "Authorization": "Bearer " + SUPABASE_KEY,
+            "Prefer": "return=representation"
+        },
+        body: JSON.stringify(depositData)
+    });
 
-    deposits.push(depositData);
-
-    localStorage.setItem(
-        "deposits",
-        JSON.stringify(deposits)
-    );
-
-    alert(
-        "Deposit submitted successfully. Waiting for admin approval."
-    );
-
-    document.getElementById("depositForm").reset();
-
+    if (res.ok) {
+        alert("Deposit submitted! Waiting admin approval.");
+        document.getElementById("depositForm").reset();
+    } else {
+        alert("Error submitting deposit");
+    }
 });
 </script>
 
