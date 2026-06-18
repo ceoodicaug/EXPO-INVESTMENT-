@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPO INVESTMENT - Recharge</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f4f4;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+}
+
+h2{
+    text-align:center;
+}
+
+input,select,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    box-sizing:border-box;
+}
+
+button{
+    background:#0066ff;
+    color:green;
+    border:none;
+    cursor:pointer;
+}
+
+button:hover{
+    opacity:.9;
+}
+
+#message{
+    margin-top:15px;
+    text-align:center;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Recharge Account</h2>
+
+<input type="number" id="amount" placeholder="Enter Amount">
+
+<select id="method">
+    <option value="MOBILE_MONEY">Mobile Money</option>
+    <option value="MPESA">M-Pesa</option>
+    <option value="AIRTEL">Airtel Money</option>
+    <option value="MTN">MTN MoMo</option>
+</select>
+
+<button onclick="startDeposit()">
+Deposit Now
+</button>
+
+<div id="message"></div>
+
+</div>
+
+<script>
+
+async function startDeposit(){
+
+const amount=document.getElementById("amount").value;
+const method=document.getElementById("method").value;
+const msg=document.getElementById("message");
+
+if(!amount || amount < 1000){
+msg.innerHTML="Minimum deposit is 8000";
+return;
+}
+
+msg.innerHTML="Creating payment request...";
+
+try{
+
+const response=await fetch(
+"https://YOUR_SUPABASE_PROJECT.supabase.co/functions/v1/pesapal-payment",
+{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+amount:amount,
+method:method
+})
+}
+);
+
+const data=await response.json();
+
+if(data.redirect_url){
+
+window.location.href=data.redirect_url;
+
+}else{
+
+msg.innerHTML="Failed to create payment request.";
+
+}
+
+}catch(error){
+
+console.error(error);
+msg.innerHTML="Server error.";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
