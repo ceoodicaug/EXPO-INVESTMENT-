@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Recharge System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 420px;
+    margin: 60px auto;
+    background: #fff;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+    text-align: center;
+}
+
+input, button {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: #28a745;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #218838;
+}
+
+.status {
+    text-align: center;
+    margin-top: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Recharge Account</h2>
+
+    <input type="text" id="name" placeholder="Full Name">
+    <input type="email" id="email" placeholder="Email Address">
+    <input type="number" id="amount" placeholder="Enter Amount">
+
+    <button onclick="payNow()">Deposit Now</button>
+
+    <div class="status" id="status"></div>
+</div>
+
+<script>
+async function payNow() {
+
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+    const amount = document.getElementById("amount").value;
+
+    if (!name || !email || !amount) {
+        alert("Please fill all fields");
+        return;
+    }
+
+    document.getElementById("status").innerText = "Redirecting to payment...";
+
+    const response = await fetch("YOUR_BACKEND_URL/create-payment", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            name,
+            email,
+            amount,
+            phone: "+256780194414"
+        })
+    });
+
+    const data = await response.json();
+
+    if (data.redirect_url) {
+        window.location.href = data.redirect_url;
+    } else {
+        document.getElementById("status").innerText = "Payment failed. Try again.";
+    }
+}
+</script>
+
+</body>
+</html>
