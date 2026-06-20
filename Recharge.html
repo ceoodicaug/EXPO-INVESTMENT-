@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recharge Payment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+            border-radius: 5px;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+        select, input[type="number"], button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Recharge Payment</h1>
+<form id="rechargeForm">
+    <label for="country">Select Country:</label>
+    <select id="country" name="country" required>
+        <option value="Kenya">Kenya (+254)</option>
+        <option value="Uganda">Uganda (+256)</option>
+        <option value="Tanzania">Tanzania (+255)</option>
+        <option value="Rwanda">Rwanda (+250)</option>
+        <option value="Burundi">Burundi (+257)</option>
+        <option value="South Sudan">South Sudan (+211)</option>
+        <!-- Add more African countries here -->
+        <option value="Nigeria">Nigeria (+234)</option>
+        <option value="South Africa">South Africa (+27)</option>
+        <option value="Ghana">Ghana (+233)</option>
+        <option value="Egypt">Egypt (+20)</option>
+        <option value="Algeria">Algeria (+213)</option>
+        <!-- ... -->
+    </select>
+
+    <label for="phone">Enter Phone Number:</label>
+    <input type="number" id="phone" name="phone" required placeholder="Without country code">
+
+    <label for="amount">Enter Amount:</label>
+    <input type="number" id="amount" name="amount" min="1" required>
+
+    <label for="paymentMethod">Select Payment Method:</label>
+    <select id="paymentMethod" name="paymentMethod" required>
+        <option value="MPESA">MPESA</option>
+        <option value="MTN Mobile Money">MTN Mobile Money</option>
+        <option value="Tigo Pesa">Tigo Pesa</option>
+        <option value="Airtel Money">Airtel Money</option>
+        <option value="Pesapal">Pesapal</option>
+        <!-- Add more payment methods as necessary -->
+    </select>
+
+    <button type="submit">Recharge</button>
+</form>
+
+<script>
+    document.getElementById('rechargeForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const country = document.getElementById('country').value;
+        const phone = document.getElementById('phone').value;
+        const amount = document.getElementById('amount').value;
+        const paymentMethod = document.getElementById('paymentMethod').value;
+
+        // Simulate payment processing through Pesapal
+        alert(`Processing payment of ${amount} for ${country} (${phone}) via ${paymentMethod}.`);
+        
+        // Here you would integrate with Pesapal API for actual payment processing
+    });
+</script>
+
+</body>
+</html>
