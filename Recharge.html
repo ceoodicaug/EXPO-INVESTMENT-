@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPO INVESTMENT - Recharge</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+    padding:20px;
+}
+
+.container{
+    max-width:500px;
+    margin:auto;
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+
+h2{
+    text-align:center;
+    color:#28a745;
+}
+
+input,select,button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:5px;
+    box-sizing:border-box;
+}
+
+button{
+    background:#28a745;
+    color:white;
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+button:hover{
+    opacity:0.9;
+}
+
+.payment-box{
+    margin-top:20px;
+    background:#f8f9fa;
+    padding:15px;
+    border-radius:8px;
+    border-left:5px solid #28a745;
+}
+
+.status{
+    margin-top:15px;
+    text-align:center;
+    font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>EXPO INVESTMENT RECHARGE</h2>
+
+<input type="text" id="phone" placeholder="Phone Number">
+
+<input type="email" id="email" placeholder="Email Address">
+
+<select id="country">
+<option value="">Select Country</option>
+<option>Uganda 🇺🇬</option>
+<option>Kenya 🇰🇪</option>
+<option>Tanzania 🇹🇿</option>
+<option>Rwanda 🇷🇼</option>
+<option>Burundi 🇧🇮</option>
+<option>South Sudan 🇸🇸</option>
+<option>Ethiopia 🇪🇹</option>
+<option>Nigeria 🇳🇬</option>
+<option>Ghana 🇬🇭</option>
+<option>Zambia 🇿🇲</option>
+<option>Malawi 🇲🇼</option>
+<option>South Africa 🇿🇦</option>
+</select>
+
+<input type="number" id="amount" placeholder="Recharge Amount">
+
+<div class="payment-box">
+<h3>Manual Deposit Details</h3>
+
+<p>
+<b>Mobile Money Number</b><br>
++256780194414
+</p>
+
+<p>
+<b>Account Name</b><br>
+ODICA JAMES PETER
+</p>
+
+<p>
+<b>Equity Bank Account Number</b><br>
+1000103714762
+</p>
+</div>
+
+<button onclick="submitRecharge()">I HAVE SENT PAYMENT</button>
+
+<div class="status" id="status"></div>
+
+</div>
+
+<script>
+function submitRecharge(){
+
+const phone=document.getElementById("phone").value;
+const email=document.getElementById("email").value;
+const country=document.getElementById("country").value;
+const amount=document.getElementById("amount").value;
+
+if(!phone || !country || !amount){
+alert("Please fill all required fields");
+return;
+}
+
+document.getElementById("status").innerHTML=
+"Recharge request submitted successfully.<br><br>" +
+"Please send " + amount +
+" using the payment details above and wait for admin approval.";
+
+console.log({
+phone,
+email,
+country,
+amount,
+status:"Pending Verification"
+});
+}
+</script>
+
+</body>
+</html>
