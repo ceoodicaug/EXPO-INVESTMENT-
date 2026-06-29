@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COPY & PAY</title>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#f5f5f5; margin:0; color:#222; }
+  .header { background:#fff; padding:12px 16px; display:flex; align-items:center; border-bottom:1px solid #e0e0e0; }
+  .header .x { font-size:24px; margin-right:12px; }
+  .header .title { font-weight:600; }
+  .sub { font-size:12px; color:#666; }
+  .card { background:#fff; margin:12px; padding:16px; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
+  .label { font-size:14px; color:#666; margin-bottom:4px; }
+  .value { font-size:24px; font-weight:700; color:#f97316; margin-bottom:12px; }
+  .row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .account { font-size:20px; font-weight:700; color:#f97316; word-break:break-all; }
+  .copy-btn { background:#f1f5f9; border:none; padding:8px; border-radius:8px; cursor:pointer; }
+  .refresh-btn { background:#f97316; color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; width:100%; cursor:pointer; }
+  textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; min-height:80px; font-size:14px; }
+  .warning { color:#dc2626; font-size:13px; margin:8px 0; }
+  .submit-btn,.whatsapp-btn { border:none; padding:12px; border-radius:8px; font-weight:600; width:100%; margin-top:8px; cursor:pointer; }
+  .submit-btn { background:#f97316; color:#fff; }
+  .whatsapp-btn { background:#25D366; color:#fff; text-decoration:none; display:block; text-align:center; }
+  .section-title { font-weight:600; margin:16px 12px 8px; }
+  
+  .tabs { display:flex; gap:8px; margin-bottom:12px; }
+  .tab { flex:1; padding:10px; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer; font-weight:600; }
+  .tab.active { background:#f97316; color:#fff; border-color:#f97316; }
+  .tab-content { display:none; }
+  .tab-content.active { display:block; }
+</style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="x">×</div>
+    <div>
+      <div class="title">COPY & PAY</div>
+      <div class="sub">Choose your payment method</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Total Amount:</div>
+    <div class="value">UGX <span id="amount">30000</span></div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('mtn')">MTN MoMo</button>
+      <button class="tab" onclick="switchTab('bank')">Equity Bank</button>
+    </div>
+
+    <!-- MTN Tab -->
+    <div id="mtn" class="tab-content active">
+      <div class="label">MTN Account:</div>
+      <div class="row">
+        <div class="account" id="mtnAccount">0780194414</div>
+        <button class="copy-btn" onclick="copyText('mtnAccount')">📋</button>
+      </div>
+      <div class="label">Account Name:</div>
+      <div class="row">
+        <div class="account" id="mtnName" style="font-size:18px;">ODICA JAMES PETER</div>
+        <button class="copy-btn" onclick="copyText('mtnName')">📋</button>
+      </div>
+    </div>
+
+    <!-- Equity Bank Tab -->
+    <div id="bank" class="tab-content">
+      <div class="label">Bank:</div>
+      <div class="row">
+        <div class="account" id="bankName">Equity Bank Uganda</div>
+        <button class="copy-btn" onclick="copyText('bankName')">📋</button>
+      </div>
+      <div class="label">Account Name:</div>
+      <div class="row">
+        <div class="account" id="bankAccName" style="font-size:18px;">ODICA JAMES PETER</div>
+        <button class="copy-btn" onclick="copyText('bankAccName')">📋</button>
+      </div>
+      <div class="label">Account Number:</div>
+      <div class="row">
+        <div class="account" id="bankAccNo">1000103714762</div>
+        <button class="copy-btn" onclick="copyText('bankAccNo')">📋</button>
+      </div>
+      <div class="label">Branch:</div>
+      <div class="account" style="font-size:16px; font-weight:500;">Kampala</div>
+    </div>
+  </div>
+
+  <div class="section-title">Payment completed?</div>
+  <div class="card">
+    <div class="label">Amount paid:</div>
+    <div class="row">
+      <div class="value" style="font-size:18px;">UGX <span id="paid">0</span></div>
+      <button class="refresh-btn" onclick="checkPayment()">Refresh</button>
+    </div>
+    <div style="font-size:13px; color:#666;">Bank transfers take 2-24hrs. MoMo is instant. Click to refresh.</div>
+    <div class="warning">* Payment not received. Please try again later.</div>
+
+    <a id="whatsappLink" class="whatsapp-btn" target="_blank">📱 Send Proof on WhatsApp</a>
+  </div>
+
+  <div class="section-title">Get results faster!</div>
+  <div class="card">
+    <div style="font-size:14px; margin-bottom:8px;">Paste payment SMS / Transaction ID / Bank Ref</div>
+    <textarea id="txId" placeholder="MTN: You have sent UGX... or Equity: Ref 12345 to ODICA JAMES PETER"></textarea>
+    <div class="warning">*Wrong details may cause payment loss.</div>
+    <button class="submit-btn" onclick="submitTx()">Submit ></button>
+  </div>
+
+<script>
+const PAYMENT_DATA = {
+  amount: "30000",
+  mtn: { account: "0780194414", name: "ODICA JAMES PETER" },
+  bank: { 
+    name: "Equity Bank Uganda", 
+    accName: "ODICA JAMES PETER",
+    accNo: "1000103714762"
+  },
+  whatsapp: "256780194414"
+};
+
+document.getElementById('amount').innerText = PAYMENT_DATA.amount;
+document.getElementById('mtnAccount').innerText = PAYMENT_DATA.mtn.account;
+document.getElementById('mtnName').innerText = PAYMENT_DATA.mtn.name;
+document.getElementById('bankName').innerText = PAYMENT_DATA.bank.name;
+document.getElementById('bankAccName').innerText = PAYMENT_DATA.bank.accName;
+document.getElementById('bankAccNo').innerText = PAYMENT_DATA.bank.accNo;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  document.getElementById(tab).classList.add('active');
+}
+
+function copyText(id) {
+  const text = document.getElementById(id).innerText;
+  navigator.clipboard.writeText(text);
+  alert('Copied: ' + text);
+}
+
+function checkPayment() {
+  document.getElementById('paid').innerText = '...';
+  setTimeout(() => {
+    document.getElementById('paid').innerText = '0';
+    alert('No payment detected yet. Check your SMS alerts.');
+  }, 1000);
+}
+
+function submitTx() {
+  const method = document.querySelector('.tab.active').innerText;
+  const msg = `Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount} via ${method}\n\nDetails:\n${document.getElementById('txId').value}`;
+  const url = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(msg)}`;
+  window.open(url, '_blank');
+}
+
+document.getElementById('whatsappLink').href = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(`Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount}`)}`;
+</script>
+
+</body>
+</html>
