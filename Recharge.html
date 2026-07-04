@@ -7,7 +7,7 @@
 <style>
   body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#f5f5f5; margin:0; color:#222; }
   .header { background:#fff; padding:12px 16px; display:flex; align-items:center; border-bottom:1px solid #e0e0e0; }
-  .header .x { font-size:24px; margin-right:12px; }
+  .header .x { font-size:24px; margin-right:12px; cursor:pointer; }
   .header .title { font-weight:600; }
   .sub { font-size:12px; color:#666; }
   .card { background:#fff; margin:12px; padding:16px; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
@@ -17,7 +17,7 @@
   .account { font-size:20px; font-weight:700; color:#f97316; word-break:break-all; }
   .copy-btn { background:#f1f5f9; border:none; padding:8px; border-radius:8px; cursor:pointer; }
   .refresh-btn { background:#f97316; color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; width:100%; cursor:pointer; }
-  textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; min-height:80px; font-size:14px; }
+  textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; min-height:80px; font-size:14px; box-sizing:border-box; }
   .warning { color:#dc2626; font-size:13px; margin:8px 0; }
   .submit-btn,.whatsapp-btn { border:none; padding:12px; border-radius:8px; font-weight:600; width:100%; margin-top:8px; cursor:pointer; }
   .submit-btn { background:#f97316; color:#fff; }
@@ -29,10 +29,21 @@
   .tab.active { background:#f97316; color:#fff; border-color:#f97316; }
   .tab-content { display:none; }
   .tab-content.active { display:block; }
+
+  /* Modal Styles */
+  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+  .modal-content { background:#fff; border-radius:12px; padding:20px; max-width:400px; width:90%; max-height:90vh; overflow-y:auto; }
+  .modal-content h2 { margin:0 0 16px; font-size:20px; }
+  .modal-content input { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:12px; font-size:14px; box-sizing:border-box; }
+  .modal-btn { background:#f97316; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:600; width:100%; cursor:pointer; margin-top:8px; }
+  .modal-btn.close { background:#ccc; color:#333; }
+  .record { background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:8px; font-size:13px; }
+  .steps { font-size:13px; margin:12px 0; line-height:1.6; }
+  .steps p { margin:6px 0; }
 </style>
 </head>
 <body>
-
+  
   <div class="header">
     <div class="x">×</div>
     <div>
@@ -107,6 +118,32 @@
     <button class="submit-btn" onclick="submitTx()">Submit ></button>
   </div>
 
+  <!-- Deposit Modal -->
+  <div id="depositModal" class="modal">
+    <div class="modal-content">
+      <h2 id="networkTitle">Deposit Instructions</h2>
+      <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#666;">Amount</div>
+        <div style="font-size:20px; font-weight:700; color:#f97316;" id="popupAmount">UGX 0</div>
+      </div>
+      <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:12px;">
+        <div style="font-size:12px; color:#666;">Account/Phone</div>
+        <div style="font-size:18px; font-weight:700;" id="acc">+256780194414</div>
+        <button class="modal-btn" onclick="copyAcc()">Copy Account</button>
+      </div>
+      <div id="stepsBox" class="steps"></div>
+      <input type="text" id="transactionId" placeholder="Enter Transaction ID or Reference">
+      <button class="modal-btn" onclick="submitPayment()">Confirm Deposit</button>
+      <button class="modal-btn close" onclick="closeDeposit()">Close</button>
+    </div>
+  </div>
+
+  <!-- History Section -->
+  <div class="section-title">Deposit History</div>
+  <div class="card">
+    <div id="historyList">No deposits yet.</div>
+  </div>
+
 <script>
 const PAYMENT_DATA = {
   amount: "0",
@@ -145,7 +182,6 @@ function copyText(id) {
     navigator.clipboard.writeText(text).then(() => {
       alert('Copied: ' + text);
     }).catch(() => {
-      // fallback
       fallbackCopy(text);
     });
   } else {
@@ -188,6 +224,119 @@ const whatsappAnchor = document.getElementById('whatsappLink');
 if (whatsappAnchor) {
   whatsappAnchor.href = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(`Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount}`)}`;
 }
+
+// ===== DEPOSIT POPUP FUNCTIONS =====
+function showDepositPopup() {
+  let amount = document.getElementById("amount").value || PAYMENT_DATA.amount;
+  let wallet = document.querySelector('.tab.active')?.innerText || 'MTN MoMo';
+  
+  if (!amount || amount === '0') {
+    alert("Enter deposit amount");
+    return;
+  }
+
+  let receiver = PAYMENT_DATA.mtn.account;
+  if (wallet === 'Equity Bank') {
+    receiver = PAYMENT_DATA.bank.accNo;
+  }
+
+  document.getElementById("networkTitle").innerText = wallet;
+  document.getElementById("popupAmount").innerText = "UGX " + Number(amount).toLocaleString();
+  document.getElementById("acc").innerText = receiver;
+
+  let stepsHTML = `<h3 style="margin-top:0;">Payment Steps:</h3>`;
+  
+  if (wallet === 'MTN MoMo') {
+    stepsHTML += `
+      <p>1. Copy account number: <strong>${receiver}</strong></p>
+      <p>2. Dial <strong>*185#</strong></p>
+      <p>3. Select <strong>Send Money</strong></p>
+      <p>4. Enter receiver: <strong>${receiver}</strong></p>
+      <p>5. Enter amount: <strong>${amount}</strong></p>
+      <p>6. Confirm with PIN</p>
+    `;
+  } else if (wallet === 'Equity Bank') {
+    stepsHTML += `
+      <p>1. Open your bank app or visit nearest ATM</p>
+      <p>2. Select <strong>Transfer Funds</strong></p>
+      <p>3. Enter bank: <strong>${PAYMENT_DATA.bank.name}</strong></p>
+      <p>4. Account name: <strong>${PAYMENT_DATA.bank.accName}</strong></p>
+      <p>5. Account number: <strong>${receiver}</strong></p>
+      <p>6. Amount: <strong>${amount}</strong></p>
+      <p>7. Confirm & complete transfer</p>
+    `;
+  }
+
+  document.getElementById("stepsBox").innerHTML = stepsHTML;
+  document.getElementById("depositModal").style.display = "flex";
+}
+
+function closeDeposit() {
+  document.getElementById("depositModal").style.display = "none";
+}
+
+function copyAcc() {
+  let text = document.getElementById("acc").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Account copied!");
+  }).catch(() => {
+    alert("Copy failed. Account: " + text);
+  });
+}
+
+function submitPayment() {
+  let txn = document.getElementById("transactionId").value.trim();
+  let amount = document.getElementById("amount").value || PAYMENT_DATA.amount;
+  let wallet = document.querySelector('.tab.active')?.innerText || 'MTN MoMo';
+
+  if (!txn) {
+    alert("Enter Transaction ID");
+    return;
+  }
+
+  let deposits = JSON.parse(localStorage.getItem("deposits") || "[]");
+  deposits.unshift({
+    amount: amount,
+    wallet: wallet,
+    txn: txn,
+    date: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("deposits", JSON.stringify(deposits));
+  loadHistory();
+
+  alert("✅ Deposit request saved! We'll verify and credit your account shortly.");
+  closeDeposit();
+  document.getElementById("transactionId").value = "";
+}
+
+function loadHistory() {
+  let deposits = JSON.parse(localStorage.getItem("deposits") || "[]");
+  let html = "";
+  
+  if (deposits.length === 0) {
+    html = "<div style='color:#999; text-align:center; padding:20px;'>No deposits yet.</div>";
+  } else {
+    deposits.forEach((d, i) => {
+      html += `<div class="record">
+        <strong>${d.wallet}</strong> - UGX ${Number(d.amount).toLocaleString()}<br>
+        <small>Txn ID: ${d.txn}</small><br>
+        <small style="color:#666;">${d.date}</small>
+      </div>`;
+    });
+  }
+  
+  document.getElementById("historyList").innerHTML = html;
+}
+
+// Close modal when clicking X or outside
+document.querySelector('.header .x').addEventListener('click', closeDeposit);
+document.getElementById('depositModal').addEventListener('click', (e) => {
+  if (e.target.id === 'depositModal') closeDeposit();
+});
+
+// Load history on page load
+loadHistory();
 </script>
 
 </body>
