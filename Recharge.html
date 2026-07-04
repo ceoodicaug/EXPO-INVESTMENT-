@@ -3,292 +3,396 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>COPY & PAY</title>
+<title>Deposit - Recharge Account</title>
 <style>
-  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background:#f5f5f5; margin:0; color:#222; }
-  .header { background:#fff; padding:12px 16px; display:flex; align-items:center; border-bottom:1px solid #e0e0e0; }
-  .header .x { font-size:24px; margin-right:12px; }
-  .header .title { font-weight:600; }
-  .sub { font-size:12px; color:#666; }
-  .card { background:#fff; margin:12px; padding:16px; border-radius:12px; box-shadow:0 1px 3px rgba(0,0,0,0.1); }
-  .label { font-size:14px; color:#666; margin-bottom:4px; }
-  .value { font-size:24px; font-weight:700; color:#f97316; margin-bottom:12px; }
-  .row { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
-  .account { font-size:20px; font-weight:700; color:#f97316; word-break:break-all; }
-  .copy-btn { background:#f1f5f9; border:none; padding:8px; border-radius:8px; cursor:pointer; }
-  .refresh-btn { background:#f97316; color:#fff; border:none; padding:10px 20px; border-radius:8px; font-weight:600; width:100%; cursor:pointer; }
-  textarea { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; min-height:80px; font-size:14px; }
-  .warning { color:#dc2626; font-size:13px; margin:8px 0; }
-  .submit-btn,.whatsapp-btn { border:none; padding:12px; border-radius:8px; font-weight:600; width:100%; margin-top:8px; cursor:pointer; }
-  .submit-btn { background:#f97316; color:#fff; }
-  .whatsapp-btn { background:#25D366; color:#fff; text-decoration:none; display:block; text-align:center; }
-  .section-title { font-weight:600; margin:16px 12px 8px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
   
-  .tabs { display:flex; gap:8px; margin-bottom:12px; }
-  .tab { flex:1; padding:10px; border:1px solid #ddd; border-radius:8px; background:#fff; cursor:pointer; font-weight:600; }
-  .tab.active { background:#f97316; color:#fff; border-color:#f97316; }
-  .tab-content { display:none; }
-  .tab-content.active { display:block; }
-  
-  /* Modal Styles */
-  .modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
-  .modal-content { background:#fff; border-radius:12px; padding:20px; max-width:400px; width:90%; }
-  .modal-content h2 { margin:0 0 16px; font-size:20px; }
-  .modal-content input { width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; margin-bottom:12px; font-size:14px; box-sizing:border-box; }
-  .modal-btn { background:#f97316; color:#fff; border:none; padding:12px; border-radius:8px; font-weight:600; width:100%; cursor:pointer; margin-top:8px; }
-  .modal-btn.close { background:#ccc; color:#333; }
-  .record { background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:8px; font-size:13px; }
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 450px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .header p {
+    font-size: 14px;
+    opacity: 0.9;
+  }
+
+  .content {
+    padding: 30px 20px;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+
+  .form-group input::placeholder {
+    color: #999;
+  }
+
+  .input-icon {
+    position: relative;
+  }
+
+  .input-icon::before {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+  }
+
+  .input-icon input {
+    padding-left: 48px;
+  }
+
+  .amount-input::before {
+    content: "💰";
+  }
+
+  .phone-input::before {
+    content: "📱";
+  }
+
+  .method-input::before {
+    content: "💳";
+  }
+
+  .info-box {
+    background: #f0f4ff;
+    border-left: 4px solid #667eea;
+    padding: 12px 16px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 14px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-primary:active {
+    transform: translateY(0);
+  }
+
+  .btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .btn-secondary:hover {
+    background: #e0e0e0;
+  }
+
+  .error {
+    color: #dc2626;
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .success {
+    color: #16a34a;
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
+  }
+
+  .footer {
+    background: #f9f9f9;
+    padding: 16px 20px;
+    text-align: center;
+    font-size: 12px;
+    color: #666;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .step-indicator {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 24px;
+    text-align: center;
+  }
+
+  .step {
+    flex: 1;
+    font-size: 12px;
+    color: #999;
+  }
+
+  .step.active {
+    color: #667eea;
+    font-weight: 600;
+  }
+
+  .step::before {
+    content: "";
+    display: block;
+    width: 32px;
+    height: 32px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    margin: 0 auto 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    color: #999;
+  }
+
+  .step.active::before {
+    background: #667eea;
+    color: #fff;
+  }
 </style>
 </head>
 <body>
-  
+
+<div class="container">
   <div class="header">
-    <div class="x">×</div>
-    <div>
-      <div class="title">COPY & PAY</div>
-      <div class="sub">Choose your payment method</div>
-    </div>
+    <h1>💳 Deposit Funds</h1>
+    <p>Add money to your account</p>
   </div>
 
-  <div class="card">
-    <div class="label">Total Amount:</div>
-    <div class="value">UGX <span id="amount"></span></div>
-
-    <div class="tabs">
-      <button class="tab active" data-tab="mtn" onclick="switchTab('mtn')">MTN MoMo</button>
-      <button class="tab" data-tab="bank" onclick="switchTab('bank')">Equity Bank</button>
+  <div class="content">
+    <div class="step-indicator">
+      <div class="step active">Enter Details</div>
+      <div class="step">Review</div>
+      <div class="step">Confirm</div>
     </div>
 
-    <!-- MTN Tab -->
-    <div id="mtn" class="tab-content active">
-      <div class="label">MTN Account:</div>
-      <div class="row">
-        <div class="account" id="mtnAccount">+256780194414</div>
-        <button class="copy-btn" onclick="copyText('mtnAccount')">📋</button>
-      </div>
-      <div class="label">Account Name:</div>
-      <div class="row">
-        <div class="account" id="mtnName" style="font-size:18px;">ODICA JAMES PETER</div>
-        <button class="copy-btn" onclick="copyText('mtnName')">📋</button>
-      </div>
+    <div class="info-box">
+      ℹ️ Fill in your deposit details below and we'll guide you through the payment process.
     </div>
 
-    <!-- Equity Bank Tab -->
-    <div id="bank" class="tab-content">
-      <div class="label">Bank:</div>
-      <div class="row">
-        <div class="account" id="bankName">Equity Bank Uganda</div>
-        <button class="copy-btn" onclick="copyText('bankName')">📋</button>
+    <form id="depositForm" onsubmit="handleSubmit(event)">
+      <!-- Amount Input -->
+      <div class="form-group">
+        <label for="amount">Deposit Amount (UGX)</label>
+        <div class="input-icon amount-input">
+          <input 
+            type="number" 
+            id="amount" 
+            name="amount"
+            placeholder="Enter amount (minimum 5,000)" 
+            min="5000" 
+            step="1000"
+            required
+          >
+        </div>
+        <div class="error" id="amountError"></div>
       </div>
-      <div class="label">Account Name:</div>
-      <div class="row">
-        <div class="account" id="bankAccName" style="font-size:18px;">ODICA JAMES PETER</div>
-        <button class="copy-btn" onclick="copyText('bankAccName')">📋</button>
+
+      <!-- Phone Number Input -->
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <div class="input-icon phone-input">
+          <input 
+            type="tel" 
+            id="phone" 
+            name="phone"
+            placeholder="e.g., 256780194414" 
+            required
+          >
+        </div>
+        <div class="error" id="phoneError"></div>
       </div>
-      <div class="label">Account Number:</div>
-      <div class="row">
-        <div class="account" id="bankAccNo">1000103714762</div>
-        <button class="copy-btn" onclick="copyText('bankAccNo')">📋</button>
+
+      <!-- Payment Method -->
+      <div class="form-group">
+        <label for="method">Payment Method</label>
+        <div class="input-icon method-input">
+          <select id="method" name="method" required>
+            <option value="">-- Select Payment Method --</option>
+            <option value="mtn">MTN Mobile Money</option>
+            <option value="equity">Equity Bank</option>
+          </select>
+        </div>
+        <div class="error" id="methodError"></div>
       </div>
-      <div class="label">Branch:</div>
-      <div class="account" style="font-size:16px; font-weight:500;">Kampala</div>
-    </div>
+
+      <!-- Buttons -->
+      <div class="button-group">
+        <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
+        <button type="submit" class="btn btn-primary">Continue →</button>
+      </div>
+      
+      <div class="success" id="successMessage"></div>
+    </form>
   </div>
 
-  <div class="section-title">Payment completed?</div>
-  <div class="card">
-    <div class="label">Amount paid:</div>
-    <div class="row">
-      <div class="value" style="font-size:18px;">UGX <span id="paid">0</span></div>
-      <button class="refresh-btn" onclick="checkPayment()">Refresh</button>
-    </div>
-    <div style="font-size:13px; color:#666;">Bank transfers take 2-24hrs. MoMo is instant. Click to refresh.</div>
-    <div class="warning">* Payment not received. Please try again later.</div>
-
-    <a id="whatsappLink" class="whatsapp-btn" target="_blank" rel="noopener noreferrer">📱 Send Proof on WhatsApp</a>
+  <div class="footer">
+    <p>🔒 Your information is secure and encrypted</p>
   </div>
-
-  <div class="section-title">Get results faster!</div>
-  <div class="card">
-    <div style="font-size:14px; margin-bottom:8px;">Paste payment SMS / Transaction ID / Bank Ref</div>
-    <textarea id="txId" placeholder="MTN: You have sent UGX... or Equity: Ref 12345 to ODICA JAMES PETER"></textarea>
-    <div class="warning">*Wrong details may cause payment loss.</div>
-    <button class="submit-btn" onclick="submitTx()">Submit ></button>
-  </div>
-
-  <!-- Deposit Modal -->
-  <div id="depositModal" class="modal">
-    <div class="modal-content">
-      <h2 id="networkTitle">Deposit</h2>
-      <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:12px;">
-        <div style="font-size:12px; color:#666;">Amount</div>
-        <div style="font-size:20px; font-weight:700; color:#f97316;" id="popupAmount">UGX 0</div>
-      </div>
-      <div style="background:#f5f5f5; padding:12px; border-radius:8px; margin-bottom:12px;">
-        <div style="font-size:12px; color:#666;">Account/Phone</div>
-        <div style="font-size:18px; font-weight:700;" id="acc">+256780194414</div>
-        <button class="modal-btn" onclick="copyAcc()">Copy</button>
-      </div>
-      <div id="stepsBox" style="font-size:13px; margin-bottom:12px;"></div>
-      <input type="text" id="transactionId" placeholder="Enter Transaction ID">
-      <button class="modal-btn" onclick="submitPayment()">Confirm Deposit</button>
-      <button class="modal-btn close" onclick="closeDeposit()">Close</button>
-    </div>
-  </div>
-
-  <!-- History Section -->
-  <div class="section-title">Deposit History</div>
-  <div class="card">
-    <div id="historyList">No deposits yet.</div>
-  </div>
+</div>
 
 <script>
-const PAYMENT_DATA = {
-  amount: "0",
-  mtn: { account: "+256780194414", name: "ODICA JAMES PETER" },
-  bank: { 
-    name: "Equity Bank Uganda", 
-    accName: "ODICA JAMES PETER",
-    accNo: "1000103714762"
-  },
-  whatsapp: "256780194414"
-};
+// Form validation and submission
+function handleSubmit(event) {
+  event.preventDefault();
 
-// Populate UI
-document.getElementById('amount').innerText = PAYMENT_DATA.amount;
-document.getElementById('mtnAccount').innerText = PAYMENT_DATA.mtn.account;
-document.getElementById('mtnName').innerText = PAYMENT_DATA.mtn.name;
-document.getElementById('bankName').innerText = PAYMENT_DATA.bank.name;
-document.getElementById('bankAccName').innerText = PAYMENT_DATA.bank.accName;
-document.getElementById('bankAccNo').innerText = PAYMENT_DATA.bank.accNo;
+  // Get form values
+  const amount = document.getElementById('amount').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const method = document.getElementById('method').value;
 
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  const btn = document.querySelector(`.tab[data-tab="${tab}"]`);
-  if (btn) btn.classList.add('active');
-  const content = document.getElementById(tab);
-  if (content) content.classList.add('active');
-}
+  // Clear previous errors
+  clearErrors();
 
-function copyText(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  const text = el.innerText || el.textContent || '';
+  // Validation
+  let isValid = true;
 
-  if (navigator.clipboard && navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(() => {
-      alert('Copied: ' + text);
-    }).catch(() => {
-      // fallback
-      fallbackCopy(text);
-    });
-  } else {
-    fallbackCopy(text);
+  // Validate amount
+  if (!amount || amount < 5000) {
+    showError('amountError', 'Minimum deposit is UGX 5,000');
+    isValid = false;
+  }
+
+  // Validate phone number
+  if (!phone) {
+    showError('phoneError', 'Phone number is required');
+    isValid = false;
+  } else if (!/^\d{10,15}$/.test(phone.replace(/\D/g, ''))) {
+    showError('phoneError', 'Please enter a valid phone number');
+    isValid = false;
+  }
+
+  // Validate method
+  if (!method) {
+    showError('methodError', 'Please select a payment method');
+    isValid = false;
+  }
+
+  if (isValid) {
+    // Store deposit info in sessionStorage for next page
+    const depositData = {
+      amount: amount,
+      phone: phone,
+      method: method,
+      timestamp: new Date().toISOString()
+    };
+
+    sessionStorage.setItem('depositData', JSON.stringify(depositData));
+
+    // Redirect to payment instructions page
+    window.location.href = 'payment.html';
   }
 }
 
-function fallbackCopy(text) {
-  try {
-    const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    document.body.removeChild(ta);
-    alert('Copied: ' + text);
-  } catch (e) {
-    alert('Could not copy to clipboard. Please copy manually: ' + text);
+function showError(elementId, message) {
+  const errorElement = document.getElementById(elementId);
+  errorElement.textContent = message;
+  errorElement.style.display = 'block';
+  errorElement.parentElement.querySelector('input, select').style.borderColor = '#dc2626';
+}
+
+function clearErrors() {
+  document.querySelectorAll('.error').forEach(el => {
+    el.style.display = 'none';
+    el.textContent = '';
+  });
+  document.querySelectorAll('input, select').forEach(el => {
+    el.style.borderColor = '#e0e0e0';
+  });
+}
+
+function goBack() {
+  // Go back to previous page or home
+  window.history.back();
+}
+
+// Format phone number on input
+document.getElementById('phone').addEventListener('input', function(e) {
+  let value = e.target.value.replace(/\D/g, '');
+  if (value.length > 15) {
+    value = value.slice(0, 15);
   }
-}
+  e.target.value = value;
+});
 
-function checkPayment() {
-  document.getElementById('paid').innerText = '...';
-  setTimeout(() => {
-    document.getElementById('paid').innerText = '0';
-    alert('No payment detected yet. Check your SMS alerts.');
-  }, 1000);
-}
-
-function submitTx() {
-  const activeTab = document.querySelector('.tab.active');
-  const method = activeTab ? activeTab.innerText : 'payment';
-  const msg = `Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount} via ${method}\n\nDetails:\n${document.getElementById('txId').value}`;
-  const url = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank', 'noopener');
-}
-
-// Set WhatsApp link safely
-const whatsappAnchor = document.getElementById('whatsappLink');
-if (whatsappAnchor) {
-  whatsappAnchor.href = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(`Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount}`)}`;
-}
-
-// New Deposit Functions
-function showDepositPopup(){
- let amount=document.getElementById("amount").value;
- let wallet=document.getElementById("wallet").value;
- if(!amount || amount<=0){alert("Enter deposit amount");return;}
- let receiver="+256780194414";
-
- document.getElementById("networkTitle").innerText=wallet;
- document.getElementById("popupAmount").innerText="UGX "+Number(amount).toLocaleString();
- document.getElementById("acc").innerText=receiver;
-
- document.getElementById("stepsBox").innerHTML=`
- <h3>Steps</h3>
- <p>1. Copy account number</p>
- <p>2. Dial *185#</p>
- <p>3. Select Send Money</p>
- <p>4. Enter ${receiver}</p>
- <p>5. Enter Amount ${amount}</p>
- <p>6. Confirm with PIN</p>`;
-
- document.getElementById("depositModal").style.display="flex";
-}
-
-function closeDeposit(){
- document.getElementById("depositModal").style.display="none";
-}
-
-function copyAcc(){
- navigator.clipboard.writeText("+256780194414");
- alert("Account copied");
-}
-
-function submitPayment(){
- let txn=document.getElementById("transactionId").value.trim();
- let amount=document.getElementById("amount").value;
- let wallet=document.getElementById("wallet").value;
-
- if(!txn){alert("Enter Transaction ID");return;}
-
- let deposits=JSON.parse(localStorage.getItem("deposits")||"[]");
- deposits.unshift({
-   amount:amount,
-   wallet:wallet,
-   txn:txn,
-   date:new Date().toLocaleString()
- });
-
- localStorage.setItem("deposits",JSON.stringify(deposits));
- loadHistory();
-
- alert("Deposit request saved locally.");
- closeDeposit();
- document.getElementById("transactionId").value="";
-}
-
-function loadHistory(){
- let deposits=JSON.parse(localStorage.getItem("deposits")||"[]");
- let html="";
- deposits.forEach(d=>{
-   html+=`<div class="record">${d.wallet} - UGX ${d.amount}<br>Txn: ${d.txn}<br>${d.date}</div>`;
- });
- document.getElementById("historyList").innerHTML=html||"No deposits yet.";
-}
-
-loadHistory();
+// Format amount with commas for display
+document.getElementById('amount').addEventListener('input', function(e) {
+  let value = e.target.value;
+  if (value && parseInt(value) > 0) {
+    document.querySelector('.info-box').innerHTML = 
+      `✅ Amount: UGX ${parseInt(value).toLocaleString()}`;
+  }
+});
 </script>
 
 </body>
