@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment Instructions</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+
+  .container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: 500px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+  }
+
+  .header h1 {
+    font-size: 24px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+
+  .header p {
+    font-size: 13px;
+    opacity: 0.9;
+  }
+
+  .content {
+    padding: 30px 20px;
+  }
+
+  .info-card {
+    background: #f0f4ff;
+    border-left: 4px solid #667eea;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+
+  .info-card h3 {
+    color: #667eea;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .info-card p {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.5;
+  }
+
+  .info-card .amount {
+    font-size: 20px;
+    font-weight: 700;
+    color: #667eea;
+    margin-top: 8px;
+  }
+
+  .account-box {
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    padding: 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .account-box h3 {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .account-details {
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+    word-break: break-all;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .copy-btn {
+    background: #667eea;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .copy-btn:hover {
+    background: #764ba2;
+  }
+
+  .steps {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+
+  .steps h3 {
+    font-size: 14px;
+    color: #333;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .steps ol {
+    list-style-position: inside;
+    font-size: 13px;
+    color: #555;
+    line-height: 1.8;
+  }
+
+  .steps li {
+    margin-bottom: 8px;
+  }
+
+  .steps strong {
+    color: #667eea;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .tab-btn {
+    padding: 12px 16px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 14px;
+    color: #999;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+  }
+
+  .tab-btn.active {
+    color: #667eea;
+    border-bottom-color: #667eea;
+  }
+
+  .tab-content {
+    display: none;
+  }
+
+  .tab-content.active {
+    display: block;
+  }
+
+  .footer {
+    background: #f9f9f9;
+    padding: 16px 20px;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+  }
+
+  .footer p {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+
+  .warning {
+    background: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #92400e;
+    margin-bottom: 20px;
+  }
+
+  .button-group {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+  }
+
+  .btn-secondary {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .btn-secondary:hover {
+    background: #e0e0e0;
+  }
+
+  .success-msg {
+    display: none;
+    background: #d1fae5;
+    border-left: 4px solid #10b981;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: #065f46;
+    margin-bottom: 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>💳 Payment Instructions</h1>
+    <p>Complete your deposit transfer</p>
+  </div>
+
+  <div class="content">
+    <!-- Deposit Summary -->
+    <div class="info-card">
+      <h3>Deposit Summary</h3>
+      <p>Amount: <span class="amount" id="displayAmount">UGX 0</span></p>
+      <p style="font-size:12px; margin-top:8px; color:#666;">Phone: <strong id="displayPhone">N/A</strong></p>
+      <p style="font-size:12px; color:#666;">Method: <strong id="displayMethod">N/A</strong></p>
+    </div>
+
+    <!-- Tabs for Payment Methods -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('mtn')">🔄 MTN MoMo</button>
+      <button class="tab-btn" onclick="switchTab('equity')">🏦 Equity Bank</button>
+    </div>
+
+    <!-- MTN Instructions -->
+    <div id="mtn" class="tab-content active">
+      <div class="warning">
+        ⚠️ MTN transfers are instant. You'll receive an SMS confirmation immediately.
+      </div>
+
+      <div class="account-box">
+        <h3>Send Money To:</h3>
+        <div class="account-details">
+          <span id="mtnPhone">+256780194414</span>
+          <button class="copy-btn" onclick="copyText('mtnPhone')">Copy</button>
+        </div>
+      </div>
+
+      <div class="account-box">
+        <h3>Account Name:</h3>
+        <div class="account-details">
+          <span id="mtnName">ODICA JAMES PETER</span>
+          <button class="copy-btn" onclick="copyText('mtnName')">Copy</button>
+        </div>
+      </div>
+
+      <div class="steps">
+        <h3>📱 Step-by-Step Instructions:</h3>
+        <ol>
+          <li>Copy the phone number above</li>
+          <li>Dial <strong>*185#</strong> on your phone</li>
+          <li>Select <strong>"Send Money"</strong></li>
+          <li>Enter receiver: <strong id="mtnAmountDisplay">+256780194414</strong></li>
+          <li>Enter amount: <strong id="amountDisplay">UGX 0</strong></li>
+          <li>Enter your <strong>4-digit PIN</strong></li>
+          <li>Confirm the transaction</li>
+          <li>You'll receive an SMS confirmation</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Equity Bank Instructions -->
+    <div id="equity" class="tab-content">
+      <div class="warning">
+        ⚠️ Bank transfers may take 2-24 hours to process. You'll be notified when verified.
+      </div>
+
+      <div class="account-box">
+        <h3>Bank Name:</h3>
+        <div class="account-details">
+          <span>Equity Bank Uganda</span>
+          <button class="copy-btn" onclick="copyText('bankName')">Copy</button>
+        </div>
+      </div>
+
+      <div class="account-box">
+        <h3>Account Name:</h3>
+        <div class="account-details">
+          <span id="bankAccName">ODICA JAMES PETER</span>
+          <button class="copy-btn" onclick="copyText('bankAccName')">Copy</button>
+        </div>
+      </div>
+
+      <div class="account-box">
+        <h3>Account Number:</h3>
+        <div class="account-details">
+          <span id="bankAccNo">1000103714762</span>
+          <button class="copy-btn" onclick="copyText('bankAccNo')">Copy</button>
+        </div>
+      </div>
+
+      <div class="account-box">
+        <h3>Branch:</h3>
+        <div class="account-details">
+          <span>Kampala</span>
+        </div>
+      </div>
+
+      <div class="steps">
+        <h3>🏦 Step-by-Step Instructions:</h3>
+        <ol>
+          <li>Open your Equity Bank mobile app or visit an ATM</li>
+          <li>Select <strong>"Transfer Funds"</strong> or <strong>"Send Money"</strong></li>
+          <li>Choose destination: <strong>"Equity Bank Uganda"</strong></li>
+          <li>Enter Account Name: <strong>ODICA JAMES PETER</strong></li>
+          <li>Enter Account Number: <strong>1000103714762</strong></li>
+          <li>Select Branch: <strong>Kampala</strong></li>
+          <li>Enter amount: <strong id="equityAmountDisplay">UGX 0</strong></li>
+          <li>Review details and confirm</li>
+          <li>Enter your PIN/password to authorize</li>
+          <li>Transaction will be processed within 2-24 hours</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Success Message -->
+    <div class="success-msg" id="successMsg">
+      ✅ Payment completed! We'll verify and credit your account shortly.
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="button-group">
+      <button class="btn btn-secondary" onclick="goBack()">← Back</button>
+      <button class="btn btn-primary" onclick="confirmPayment()">✓ I've Sent the Money</button>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>🔒 Your information is secure and encrypted</p>
+    <p style="margin-top:8px; font-size:11px;">If you have any issues, contact support via WhatsApp</p>
+  </div>
+</div>
+
+<script>
+// Load deposit data from sessionStorage
+function loadDepositData() {
+  const depositData = JSON.parse(sessionStorage.getItem('depositData') || '{}');
+  
+  if (!depositData.amount) {
+    alert('No deposit data found. Please start over.');
+    window.location.href = 'Recharge.html';
+    return;
+  }
+
+  const amount = parseInt(depositData.amount).toLocaleString();
+  const method = depositData.method === 'mtn' ? 'MTN MoMo' : 'Equity Bank';
+  const phone = depositData.phone;
+
+  // Display summary
+  document.getElementById('displayAmount').innerText = `UGX ${amount}`;
+  document.getElementById('displayPhone').innerText = phone;
+  document.getElementById('displayMethod').innerText = method;
+
+  // Display amounts in instructions
+  document.getElementById('mtnAmountDisplay').innerText = `+256780194414 with UGX ${amount}`;
+  document.getElementById('amountDisplay').innerText = `UGX ${amount}`;
+  document.getElementById('equityAmountDisplay').innerText = `UGX ${amount}`;
+
+  // Auto-switch to selected method
+  if (method === 'Equity Bank') {
+    switchTab('equity');
+  } else {
+    switchTab('mtn');
+  }
+}
+
+function switchTab(tab) {
+  // Hide all tabs
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+  // Show selected tab
+  const content = document.getElementById(tab);
+  const btn = event.target;
+  
+  if (content) content.classList.add('active');
+  if (btn) btn.classList.add('active');
+}
+
+function copyText(id) {
+  const element = document.getElementById(id);
+  if (!element) return;
+
+  const text = element.innerText || element.textContent;
+  
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('✅ Copied: ' + text);
+    }).catch(() => {
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  try {
+    const textarea = document.createElement('textarea');
+    textarea.value = text;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    alert('✅ Copied: ' + text);
+  } catch (e) {
+    alert('Could not copy. Please copy manually: ' + text);
+  }
+}
+
+function confirmPayment() {
+  const depositData = JSON.parse(sessionStorage.getItem('depositData') || '{}');
+  
+  // Save to localStorage
+  let deposits = JSON.parse(localStorage.getItem('deposits') || '[]');
+  deposits.unshift({
+    amount: depositData.amount,
+    phone: depositData.phone,
+    method: depositData.method === 'mtn' ? 'MTN MoMo' : 'Equity Bank',
+    date: new Date().toLocaleString(),
+    status: 'pending'
+  });
+  
+  localStorage.setItem('deposits', JSON.stringify(deposits));
+
+  // Show success message
+  document.getElementById('successMsg').style.display = 'block';
+  
+  setTimeout(() => {
+    alert('✅ Deposit request received! We\'ll verify and credit your account shortly.');
+    // Clear session data
+    sessionStorage.removeItem('depositData');
+    // Redirect to home
+    window.location.href = 'index.html';
+  }, 2000);
+}
+
+function goBack() {
+  window.location.href = 'Recharge.html';
+}
+
+// Load data when page loads
+window.addEventListener('load', loadDepositData);
+</script>
+
+</body>
+</html>
