@@ -46,8 +46,8 @@
     <div class="value">UGX <span id="amount"></span></div>
 
     <div class="tabs">
-      <button class="tab active" onclick="switchTab('mtn')">MTN MoMo</button>
-      <button class="tab" onclick="switchTab('bank')">Equity Bank</button>
+      <button class="tab active" data-tab="mtn" onclick="switchTab('mtn')">MTN MoMo</button>
+      <button class="tab" data-tab="bank" onclick="switchTab('bank')">Equity Bank</button>
     </div>
 
     <!-- MTN Tab -->
@@ -96,7 +96,7 @@
     <div style="font-size:13px; color:#666;">Bank transfers take 2-24hrs. MoMo is instant. Click to refresh.</div>
     <div class="warning">* Payment not received. Please try again later.</div>
 
-    <a id="whatsappLink" class="whatsapp-btn" target="_blank">📱 Send Proof on WhatsApp</a>
+    <a id="whatsappLink" class="whatsapp-btn" target="_blank" rel="noopener noreferrer">📱 Send Proof on WhatsApp</a>
   </div>
 
   <div class="section-title">Get results faster!</div>
@@ -109,7 +109,7 @@
 
 <script>
 const PAYMENT_DATA = {
-  amount"",
+  amount: "0",
   mtn: { account: "+256780194414", name: "ODICA JAMES PETER" },
   bank: { 
     name: "Equity Bank Uganda", 
@@ -119,6 +119,7 @@ const PAYMENT_DATA = {
   whatsapp: "256780194414"
 };
 
+// Populate UI
 document.getElementById('amount').innerText = PAYMENT_DATA.amount;
 document.getElementById('mtnAccount').innerText = PAYMENT_DATA.mtn.account;
 document.getElementById('mtnName').innerText = PAYMENT_DATA.mtn.name;
@@ -129,14 +130,41 @@ document.getElementById('bankAccNo').innerText = PAYMENT_DATA.bank.accNo;
 function switchTab(tab) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
-  document.getElementById(tab).classList.add('active');
+  const btn = document.querySelector(`.tab[data-tab="${tab}"]`);
+  if (btn) btn.classList.add('active');
+  const content = document.getElementById(tab);
+  if (content) content.classList.add('active');
 }
 
 function copyText(id) {
-  const text = document.getElementById(id).innerText;
-  navigator.clipboard.writeText(text);
-  alert('Copied: ' + text);
+  const el = document.getElementById(id);
+  if (!el) return;
+  const text = el.innerText || el.textContent || '';
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copied: ' + text);
+    }).catch(() => {
+      // fallback
+      fallbackCopy(text);
+    });
+  } else {
+    fallbackCopy(text);
+  }
+}
+
+function fallbackCopy(text) {
+  try {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    alert('Copied: ' + text);
+  } catch (e) {
+    alert('Could not copy to clipboard. Please copy manually: ' + text);
+  }
 }
 
 function checkPayment() {
@@ -148,13 +176,18 @@ function checkPayment() {
 }
 
 function submitTx() {
-  const method = document.querySelector('.tab.active').innerText;
+  const activeTab = document.querySelector('.tab.active');
+  const method = activeTab ? activeTab.innerText : 'payment';
   const msg = `Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount} via ${method}\n\nDetails:\n${document.getElementById('txId').value}`;
   const url = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(msg)}`;
-  window.open(url, '_blank');
+  window.open(url, '_blank', 'noopener');
 }
 
-document.getElementById('whatsappLink').href = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(`Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount}`)}`;
+// Set WhatsApp link safely
+const whatsappAnchor = document.getElementById('whatsappLink');
+if (whatsappAnchor) {
+  whatsappAnchor.href = `https://wa.me/${PAYMENT_DATA.whatsapp}?text=${encodeURIComponent(`Hi ODICA, I have paid UGX ${PAYMENT_DATA.amount}`)}`;
+}
 </script>
 
 </body>
