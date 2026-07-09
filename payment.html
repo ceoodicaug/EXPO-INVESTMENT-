@@ -271,8 +271,8 @@
     <!-- Tabs for Payment Methods -->
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('mtn')">🔄 MTN MoMo</button>
-      <button class="tab-btn" onclick="switchTab('equity')">🏦 Equity Bank</button>
-    </div>
+      <button class="tab-btn" onclick="switchTab('Airtel')">💰 Airtel money</button>
+    </div/>
 
     <!-- MTN Instructions -->
     <div id="mtn" class="tab-content active">
@@ -300,67 +300,13 @@
         <h3>📱 Step-by-Step Instructions:</h3>
         <ol>
           <li>Copy the phone number above</li>
-          <li>Dial <strong>*185#</strong> on your phone</li>
+          <li>Dial <strong>*165#</strong> on your phone</li>
           <li>Select <strong>"Send Money"</strong></li>
           <li>Enter receiver: <strong id="mtnAmountDisplay">+256780194414</strong></li>
           <li>Enter amount: <strong id="amountDisplay">UGX 0</strong></li>
           <li>Enter your <strong>4-digit PIN</strong></li>
           <li>Confirm the transaction</li>
           <li>You'll receive an SMS confirmation</li>
-        </ol>
-      </div>
-    </div>
-
-    <!-- Equity Bank Instructions -->
-    <div id="equity" class="tab-content">
-      <div class="warning">
-        ⚠️ Bank transfers may take 2-24 hours to process. You'll be notified when verified.
-      </div>
-
-      <div class="account-box">
-        <h3>Bank Name:</h3>
-        <div class="account-details">
-          <span>Equity Bank Uganda</span>
-          <button class="copy-btn" onclick="copyText('bankName')">Copy</button>
-        </div>
-      </div>
-
-      <div class="account-box">
-        <h3>Account Name:</h3>
-        <div class="account-details">
-          <span id="bankAccName">ODICA JAMES PETER</span>
-          <button class="copy-btn" onclick="copyText('bankAccName')">Copy</button>
-        </div>
-      </div>
-
-      <div class="account-box">
-        <h3>Account Number:</h3>
-        <div class="account-details">
-          <span id="bankAccNo">1000103714762</span>
-          <button class="copy-btn" onclick="copyText('bankAccNo')">Copy</button>
-        </div>
-      </div>
-
-      <div class="account-box">
-        <h3>Branch:</h3>
-        <div class="account-details">
-          <span>Kampala</span>
-        </div>
-      </div>
-
-      <div class="steps">
-        <h3>🏦 Step-by-Step Instructions:</h3>
-        <ol>
-          <li>Open your Equity Bank mobile app or visit an ATM</li>
-          <li>Select <strong>"Transfer Funds"</strong> or <strong>"Send Money"</strong></li>
-          <li>Choose destination: <strong>"Equity Bank Uganda"</strong></li>
-          <li>Enter Account Name: <strong>ODICA JAMES PETER</strong></li>
-          <li>Enter Account Number: <strong>1000103714762</strong></li>
-          <li>Select Branch: <strong>Kampala</strong></li>
-          <li>Enter amount: <strong id="equityAmountDisplay">UGX 0</strong></li>
-          <li>Review details and confirm</li>
-          <li>Enter your PIN/password to authorize</li>
-          <li>Transaction will be processed within 2-24 hours</li>
         </ol>
       </div>
     </div>
