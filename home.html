@@ -147,6 +147,92 @@
 </style>
 </head>
 <body>
+<!-- Movable Customer Service Button -->
+<a href="https://t.me/cashadmin2000" id="supportBtn" class="customer-service">
+    💬 Customer Service
+</a>
+
+<style>
+.customer-service{
+    position:fixed;
+    bottom:100px;
+    right:20px;
+    background:#0088cc;
+    color:#fff;
+    text-decoration:none;
+    padding:14px 20px;
+    border-radius:50px;
+    font-size:16px;
+    font-weight:bold;
+    box-shadow:0 8px 20px rgba(0,0,0,.3);
+    z-index:999999;
+    cursor:move;
+    user-select:none;
+    animation:float 2s infinite;
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-6px);}
+    100%{transform:translateY(0);}
+}
+</style>
+
+<script>
+const btn = document.getElementById("supportBtn");
+
+let isDragging = false;
+let moved = false;
+let offsetX, offsetY;
+
+btn.addEventListener("mousedown", startDrag);
+btn.addEventListener("touchstart", startDrag);
+
+function startDrag(e){
+    isDragging = true;
+    moved = false;
+
+    const touch = e.touches ? e.touches[0] : e;
+
+    offsetX = touch.clientX - btn.getBoundingClientRect().left;
+    offsetY = touch.clientY - btn.getBoundingClientRect().top;
+
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("touchmove", drag,{passive:false});
+
+    document.addEventListener("mouseup", stopDrag);
+    document.addEventListener("touchend", stopDrag);
+}
+
+function drag(e){
+    if(!isDragging) return;
+
+    moved = true;
+
+    const touch = e.touches ? e.touches[0] : e;
+
+    btn.style.left = (touch.clientX - offsetX) + "px";
+    btn.style.top = (touch.clientY - offsetY) + "px";
+    btn.style.right = "auto";
+    btn.style.bottom = "auto";
+
+    e.preventDefault();
+}
+
+function stopDrag(){
+    isDragging = false;
+
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("touchmove", drag);
+}
+
+btn.addEventListener("click", function(e){
+    if(moved){
+        e.preventDefault();
+        moved = false;
+    }
+});
+</script>
 
 <div class="header">
     <div class="header-left">Notify</div>
