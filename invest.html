@@ -182,12 +182,126 @@
         <span>Mine</span>
     </a>
 </div>
-
 <script>
 // Redirect if not logged in
 if (!localStorage.getItem('isLoggedIn')) {
     window.location.href = 'index.html';
 }
+
+// Initialize balance if missing
+if (!localStorage.getItem('balance')) {
+    localStorage.setItem('balance', '0');
+}
+
+// Invest function
+function investPlan(planName, amount) {
+
+    let balance = parseFloat(localStorage.getItem('balance')) || 0;
+
+    if (balance < amount) {
+        alert(
+            `Insufficient balance!
+
+Required: UGX ${amount.toLocaleString()}
+Available: UGX ${balance.toLocaleString()}`
+        );
+        return;
+    }
+
+    const confirmInvestment = confirm(
+        `Invest UGX ${amount.toLocaleString()} in ${planName}?`
+    );
+
+    if (!confirmInvestment) return;
+
+    // Deduct balance
+    balance -= amount;
+    localStorage.setItem('balance', balance);
+
+    // Save investment
+    let investments = JSON.parse(
+        localStorage.getItem('investments') || '[]'
+    );
+
+    let duration = 10;
+    let returnRate = 15;
+
+    if (planName === 'Solar Energy Fund') {
+        duration = 10;
+        returnRate = 12;
+    }
+
+    if (planName === 'Real Estate Development') {
+        duration = 15;
+        returnRate = 18;
+    }
+
+    investments.push({
+        plan: planName,
+        amount: amount,
+        returnRate: returnRate,
+        startDate: Date.now(),
+        durationDays: duration,
+        status: 'Active'
+    });
+
+    localStorage.setItem(
+        'investments',
+        JSON.stringify(investments)
+    );
+
+    alert('Investment activated successfully!');
+}
+
+// Auto-check completed investments
+function processMaturedInvestments() {
+
+    let investments = JSON.parse(
+        localStorage.getItem('investments') || '[]'
+    );
+
+    let balance = parseFloat(
+        localStorage.getItem('balance') || '0'
+    );
+
+    let updated = false;
+
+    investments.forEach(inv => {
+
+        if (inv.status === 'Active') {
+
+            const maturity =
+                inv.startDate +
+                (inv.durationDays * 24 * 60 * 60 * 1000);
+
+            if (Date.now() >= maturity) {
+
+                const profit =
+                    inv.amount * (inv.returnRate / 100);
+
+                balance += inv.amount + profit;
+
+                inv.status = 'Completed';
+
+                updated = true;
+            }
+        }
+    });
+
+    if (updated) {
+        localStorage.setItem(
+            'investments',
+            JSON.stringify(investments)
+        );
+
+        localStorage.setItem(
+            'balance',
+            balance
+        );
+    }
+}
+
+processMaturedInvestments();
 </script>
 
 </body>
