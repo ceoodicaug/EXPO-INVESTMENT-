@@ -225,6 +225,118 @@ window.location.href='home.html';
 }
 
 </script>
+<!-- Floating Movable Telegram Customer Service Button -->
+<a href="https://t.me/cashadmin2000"
+   target="_blank"
+   rel="noopener noreferrer"
+   id="supportBtn"
+   class="customer-service">
+    💬 Customer Service
+</a>
+
+<style>
+.customer-service{
+    position:fixed;
+    bottom:100px;
+    right:20px;
+    background:linear-gradient(135deg,#0088cc,#00bfff);
+    color:#fff;
+    text-decoration:none;
+    padding:14px 20px;
+    border-radius:50px;
+    font-size:16px;
+    font-weight:600;
+    box-shadow:0 8px 20px rgba(0,0,0,.25);
+    z-index:999999;
+    user-select:none;
+    touch-action:none;
+    animation:float 2s ease-in-out infinite;
+    transition:transform .2s ease;
+}
+
+.customer-service:hover{
+    transform:scale(1.05);
+}
+
+@keyframes float{
+    0%{transform:translateY(0);}
+    50%{transform:translateY(-6px);}
+    100%{transform:translateY(0);}
+}
+</style>
+
+<script>
+const btn = document.getElementById("supportBtn");
+
+let isDragging = false;
+let moved = false;
+let startX = 0;
+let startY = 0;
+let offsetX = 0;
+let offsetY = 0;
+
+function startDrag(e) {
+    const touch = e.touches ? e.touches[0] : e;
+
+    startX = touch.clientX;
+    startY = touch.clientY;
+
+    const rect = btn.getBoundingClientRect();
+
+    offsetX = touch.clientX - rect.left;
+    offsetY = touch.clientY - rect.top;
+
+    isDragging = true;
+    moved = false;
+
+    document.addEventListener("mousemove", drag);
+    document.addEventListener("touchmove", drag, { passive:false });
+
+    document.addEventListener("mouseup", stopDrag);
+    document.addEventListener("touchend", stopDrag);
+}
+
+function drag(e) {
+    if (!isDragging) return;
+
+    const touch = e.touches ? e.touches[0] : e;
+
+    const dx = Math.abs(touch.clientX - startX);
+    const dy = Math.abs(touch.clientY - startY);
+
+    if (dx > 10 || dy > 10) {
+        moved = true;
+    }
+
+    if (moved) {
+        btn.style.left = (touch.clientX - offsetX) + "px";
+        btn.style.top = (touch.clientY - offsetY) + "px";
+        btn.style.right = "auto";
+        btn.style.bottom = "auto";
+
+        e.preventDefault();
+    }
+}
+
+function stopDrag() {
+    isDragging = false;
+
+    document.removeEventListener("mousemove", drag);
+    document.removeEventListener("touchmove", drag);
+    document.removeEventListener("mouseup", stopDrag);
+    document.removeEventListener("touchend", stopDrag);
+}
+
+btn.addEventListener("mousedown", startDrag);
+btn.addEventListener("touchstart", startDrag);
+
+btn.addEventListener("click", function(e){
+    if(moved){
+        e.preventDefault();
+        moved = false;
+    }
+});
+</script>
 
 </body>
 </html>
