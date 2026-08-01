@@ -274,24 +274,17 @@
       </div>
 
       <!-- Payment Method -->
-      <div class="form-group">
-        <label for="method">Payment Method</label>
-        <div class="input-icon method-input">
-          <select id="method" name="method" required>
-            <option value="">-- Select Payment Method --</option>
-            <option value="mtn">MTN Mobile Money</option>
-            <option value="equity">Equity Bank</option>
-          </select>
-        </div>
-        <div class="error" id="methodError"></div>
-      </div>
-
-      <!-- Buttons -->
-      <div class="button-group">
-        <button type="button" class="btn btn-secondary" onclick="goBack()">Cancel</button>
-        <button type="submit" class="btn btn-primary">Continue →</button>
-      </div>
-      
+<div class="form-group">
+  <label for="method">Payment Method</label>
+  <div class="input-icon method-input">
+    <select id="method" name="method" required>
+      <option value="">-- Select Payment Method --</option>
+      <option value="mtn">🟡 MTN Mobile Money</option>
+      <option value="airtel">🔴 Airtel Money</option>
+    </select>
+  </div>
+  <div class="error" id="methodError"></div>
+</div>
       <div class="success" id="successMessage"></div>
     </form>
   </div>
