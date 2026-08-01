@@ -774,3 +774,503 @@ Online Now
 </div>
 
 </div>
+<!-- ==========================
+INVESTMENT PLANS
+========================== -->
+
+<h2 class="section-title">
+Investment Plans
+</h2>
+
+<div class="plans">
+
+<div class="plan-card" onclick="investPlan(20000)">
+<h3>🥉 Starter Plan</h3>
+<p>Investment: <b>UGX 20,000</b></p>
+<p>Daily Profit: <b>UGX 2,000</b></p>
+<button>Invest Now</button>
+</div>
+
+<div class="plan-card" onclick="investPlan(50000)">
+<h3>🥈 Silver Plan</h3>
+<p>Investment: <b>UGX 50,000</b></p>
+<p>Daily Profit: <b>UGX 5,500</b></p>
+<button>Invest Now</button>
+</div>
+
+<div class="plan-card" onclick="investPlan(100000)">
+<h3>🥇 Gold Plan</h3>
+<p>Investment: <b>UGX 100,000</b></p>
+<p>Daily Profit: <b>UGX 12,000</b></p>
+<button>Invest Now</button>
+</div>
+
+<div class="plan-card" onclick="investPlan(200000)">
+<h3>💎 Platinum Plan</h3>
+<p>Investment: <b>UGX 200,000</b></p>
+<p>Daily Profit: <b>UGX 25,000</b></p>
+<button>Invest Now</button>
+</div>
+
+</div>
+
+<!-- ==========================
+REFERRAL
+========================== -->
+
+<div class="referral-box">
+
+<h3>🎁 Invite Friends</h3>
+
+<p style="margin-bottom:15px;">
+Earn referral bonuses every time your invited friends invest.
+</p>
+
+<input
+type="text"
+id="refLink"
+readonly
+value="https://expouga.netlify.app/register.html?ref=USER001">
+
+<button onclick="copyReferral()">
+📋 Copy Referral Link
+</button>
+
+</div>
+
+<!-- ==========================
+TRANSACTION HISTORY
+========================== -->
+
+<div class="dynamic">
+
+<h3>
+📊 Recent Transactions
+</h3>
+
+<div id="dynamicContainer">
+
+<div class="dynamic-item">
+
+<div class="dynamic-icon">
+💰
+</div>
+
+<div class="dynamic-text">
+
+<strong>
+Welcome to EXPO INVESTMENT
+</strong>
+
+<div class="dynamic-time">
+No transactions yet
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- ==========================
+BOTTOM NAVIGATION
+========================== -->
+
+<div class="bottom-nav">
+
+<a href="home.html" class="nav-item active">
+<div>🏠</div>
+<span>Home</span>
+</a>
+
+<a href="invest.html" class="nav-item">
+<div>📈</div>
+<span>Invest</span>
+</a>
+
+<a href="team.html" class="nav-item">
+<div>👥</div>
+<span>Team</span>
+</a>
+
+<a href="mine.html" class="nav-item">
+<div>👤</div>
+<span>Mine</span>
+</a>
+
+</div>
+<script>
+
+/* ==========================
+LOGIN CHECK
+========================== */
+
+if(!localStorage.getItem("isLoggedIn")){
+    window.location.href="index.html";
+}
+
+/* ==========================
+LOAD USER
+========================== */
+
+const user=JSON.parse(localStorage.getItem("user")||"{}");
+
+document.getElementById("username").textContent=
+(user.firstName||"User")+" "+(user.lastName||"");
+
+document.getElementById("avatar").textContent=
+(user.firstName||"U").charAt(0).toUpperCase();
+
+const userId=user.email||"guest";
+
+const balanceKey="balance_"+userId;
+const transactionKey="transactions_"+userId;
+
+/* ==========================
+BALANCE
+========================== */
+
+function updateBalance(){
+
+const balance=
+Number(localStorage.getItem(balanceKey)||0);
+
+const money=
+new Intl.NumberFormat("en-US").format(balance);
+
+document.getElementById("availableBalance").textContent=
+"UGX "+money;
+
+document.getElementById("cumulativeIncome").textContent=
+"UGX "+money;
+
+}
+
+/* ==========================
+TRANSACTIONS
+========================== */
+
+function getTransactions(){
+
+return JSON.parse(
+localStorage.getItem(transactionKey)||"[]"
+);
+
+}
+
+function displayTransactions(){
+
+const list=getTransactions();
+
+const container=
+document.getElementById("dynamicContainer");
+
+container.innerHTML="";
+
+if(list.length===0){
+
+container.innerHTML=`
+<div class="dynamic-item">
+
+<div class="dynamic-icon">
+💰
+</div>
+
+<div class="dynamic-text">
+
+<strong>No Transactions</strong>
+
+<div class="dynamic-time">
+
+Your transactions will appear here.
+
+</div>
+
+</div>
+
+</div>
+`;
+
+return;
+
+}
+
+list.slice(-10).reverse().forEach(tx=>{
+
+let icon="💰";
+
+if(tx.type==="withdraw") icon="🏦";
+
+if(tx.type==="income") icon="📈";
+
+if(tx.type==="deposit") icon="💳";
+
+container.innerHTML+=`
+
+<div class="dynamic-item">
+
+<div class="dynamic-icon">
+
+${icon}
+
+</div>
+
+<div class="dynamic-text">
+
+<strong>
+
+${tx.description}
+
+</strong>
+
+<div>
+
+UGX ${Number(tx.amount).toLocaleString()}
+
+</div>
+
+<div class="dynamic-time">
+
+${tx.date}
+
+</div>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+/* ==========================
+ADD TRANSACTION
+========================== */
+
+function addTransaction(type,amount,description){
+
+let data=getTransactions();
+
+data.push({
+
+id:Date.now(),
+
+type:type,
+
+amount:amount,
+
+description:description,
+
+date:new Date().toLocaleString()
+
+});
+
+localStorage.setItem(
+transactionKey,
+JSON.stringify(data)
+);
+
+let balance=
+Number(localStorage.getItem(balanceKey)||0);
+
+if(type==="withdraw"){
+
+balance-=amount;
+
+}else{
+
+balance+=amount;
+
+}
+
+localStorage.setItem(balanceKey,balance);
+
+updateBalance();
+
+displayTransactions();
+
+}
+/* ==========================
+INVEST PLAN
+========================== */
+
+function investPlan(amount){
+
+localStorage.setItem("selectedPlan",amount);
+
+window.location.href="invest.html";
+
+}
+
+/* ==========================
+COPY REFERRAL
+========================== */
+
+function copyReferral(){
+
+const input=document.getElementById("refLink");
+
+input.select();
+
+input.setSelectionRange(0,99999);
+
+navigator.clipboard.writeText(input.value);
+
+alert("Referral link copied successfully!");
+
+}
+
+/* ==========================
+LIVE DEPOSIT & WITHDRAW FEED
+========================== */
+
+const names=[
+"James","Grace","Michael","Sarah","David","Peter","John","Mary","Daniel","Brian",
+"Kevin","Joseph","Alice","Richard","Esther","Isaac","Andrew","Moses","Emma","Joshua",
+"Samuel","Gloria","Victor","Janet","Sharon","Noah","Faith","Robert","Henry","Charles"
+];
+
+function randomPhone(){
+
+return "+2567"+
+Math.floor(Math.random()*90+10)+
+"****"+
+Math.floor(Math.random()*90+10);
+
+}
+
+function randomAmount(){
+
+const amounts=[
+20000,
+30000,
+50000,
+75000,
+100000,
+150000,
+200000,
+250000,
+300000,
+500000,
+1000000
+];
+
+return amounts[
+Math.floor(Math.random()*amounts.length)
+].toLocaleString();
+
+}
+
+let feed=[];
+
+for(let i=0;i<40;i++){
+
+const person=Math.random()>0.5
+?randomPhone()
+:names[Math.floor(Math.random()*names.length)];
+
+feed.push(
+"🟢 "+person+
+" deposited UGX "+
+randomAmount()
+);
+
+}
+
+for(let i=0;i<40;i++){
+
+const person=Math.random()>0.5
+?randomPhone()
+:names[Math.floor(Math.random()*names.length)];
+
+feed.push(
+"🔴 "+person+
+" withdrew UGX "+
+randomAmount()
+);
+
+}
+
+feed.sort(()=>Math.random()-0.5);
+
+document.getElementById("liveFeed").innerHTML=
+feed.join("&nbsp;&nbsp; | &nbsp;&nbsp;");
+
+/* ==========================
+DRAG CUSTOMER SERVICE BUTTON
+========================== */
+
+const btn=document.getElementById("supportBtn");
+
+let dragging=false;
+
+let offsetX=0;
+
+let offsetY=0;
+
+btn.addEventListener("touchstart",startDrag);
+
+btn.addEventListener("mousedown",startDrag);
+
+function startDrag(e){
+
+dragging=true;
+
+const touch=e.touches?e.touches[0]:e;
+
+offsetX=touch.clientX-btn.offsetLeft;
+
+offsetY=touch.clientY-btn.offsetTop;
+
+}
+
+document.addEventListener("mousemove",drag);
+
+document.addEventListener("touchmove",drag,{passive:false});
+
+function drag(e){
+
+if(!dragging) return;
+
+const touch=e.touches?e.touches[0]:e;
+
+btn.style.left=(touch.clientX-offsetX)+"px";
+
+btn.style.top=(touch.clientY-offsetY)+"px";
+
+btn.style.right="auto";
+
+btn.style.bottom="auto";
+
+e.preventDefault();
+
+}
+
+document.addEventListener("mouseup",()=>dragging=false);
+
+document.addEventListener("touchend",()=>dragging=false);
+
+/* ==========================
+INITIALIZE
+========================== */
+
+updateBalance();
+
+displayTransactions();
+
+setInterval(function(){
+
+updateBalance();
+
+displayTransactions();
+
+},3000);
+
+</script>
+
+</body>
+</html>
