@@ -235,7 +235,13 @@ btn.addEventListener("click", function(e){
 </script>
 
 <div class="header">
-    <div class="header-left">Notify</div>
+    <div class="header">
+    <div class="live">Notify</div>
+
+    <div class="notice-box">
+        📢 Welcome to EXPO INVESTMENT. Invest and earn daily profits with our trusted investment plans.
+    </div>
+
     <div class="header-right">
         <span>Welcome</span>
         <div class="reward-badge">Check-in reward</div>
@@ -291,7 +297,7 @@ function phone(){
 }
 
 function amount(){
-    const a=[50000,75000,100000,150000,200000,250000,300000,500000,750000,1000000,1500000,2000000,3000000];
+    const a=[20000,15000,10000,35000,50000,75000,100000,150000,200000,250000,30000,500000,750000,100000,150000,200000,3000000];
     return a[Math.floor(Math.random()*a.length)].toLocaleString();
 }
 
@@ -333,6 +339,15 @@ feed.join("&nbsp;&nbsp; | &nbsp;&nbsp;");
     <div>Withdraw</div>
   </a>
 </div>
+<div class="balance-row">
+    <div class="balance-card blue">
+        <div class="amount" id="availableBalance">UGX 0</div>
+        <div class="label">Available balance</div>
+    </div>
+    <div class="balance-card teal">
+        <div class="amount" id="cumulativeIncome">UGX 0</div>
+        <div class="label">Cumulative income</div>
+    </div>
 <!-- ===== HOME EXTRA SECTION ===== -->
 
 <div class="stats-section">
@@ -355,10 +370,6 @@ feed.join("&nbsp;&nbsp; | &nbsp;&nbsp;");
         <h3>350</h3>
         <p>Online</p>
     </div>
-</div>
-
-<div class="notice-box">
-    📢 Welcome to EXPO INVESTMENT. Invest and earn daily profits with our trusted investment plans.
 </div>
 
 <h2 class="section-title">Investment Plans</h2>
@@ -532,23 +543,7 @@ function copyReferral(){
 
 <!-- ===== END HOME EXTRA SECTION ===== -->
 
-<div class="balance-row">
-    <div class="balance-card blue">
-        <div class="amount" id="availableBalance">UGX 0</div>
-        <div class="label">Available balance</div>
-    </div>
-    <div class="balance-card teal">
-        <div class="amount" id="cumulativeIncome">UGX 0</div>
-        <div class="label">Cumulative income</div>
-    </div>
-</div>
 
-<div class="invest-banner">
-    <div>
-        <h3>Invest in base stations</h3>
-        <p>Start sharing revenue now</p>
-    </div>
-    <div>📡</div>
 </div>
 
 <div class="dynamic">
