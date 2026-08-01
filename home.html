@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EXPO INVESTMENT - Home</title>
+<title>AI EXPO INVESTMENT - Home</title>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
     
@@ -247,22 +247,91 @@ btn.addEventListener("click", function(e){
     <div class="username" id="username">USER NAME</div>
 </div>
 
-<div class="live-withdraw">
-    <marquee>
-        ✅ Peter withdrew UGX 250,000 |
-        ✅ Sarah withdrew UGX 100,000 |
-        ✅ James withdrew UGX 500,000 |
-        ✅ Grace withdrew UGX 350,000 |
-        ✅ David withdrew UGX 800,000 |
-        ✅ Michael withdrew UGX 200,000
-    </marquee>
+<div class="live-transactions">
+    <marquee id="liveFeed" behavior="scroll" direction="left" scrollamount="5"></marquee>
 </div>
+
+<style>
+.live-transactions{
+    background:#0f172a;
+    color:#fff;
+    padding:12px;
+    border-radius:8px;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.deposit{
+    color:#22c55e; /* Green */
+    font-weight:bold;
+}
+
+.withdraw{
+    color:#ef4444; /* Red */
+    font-weight:bold;
+}
+</style>
+
+<script>
+const names=[
+"James","Grace","Michael","Sarah","David","Peter","John","Mary","Daniel","Brian",
+"Patricia","Kevin","Joseph","Alice","Richard","Esther","Isaac","Andrew","Ronald","Moses",
+"Linda","Hellen","Paul","Joshua","Emma","Sharon","Noah","Faith","Samuel","Gloria",
+"Timothy","Sandra","Mark","Irene","Charles","Brenda","Dennis","Ruth","Ivan","Dorcas",
+"Simon","Mercy","Joel","Rebecca","Martin","Stella","Henry","Priscilla","Alex","Diana",
+"Stephen","Carol","Fred","Susan","Chris","Betty","Patrick","Janet","Victor","Joan",
+"Allan","Rose","Godfrey","Annet","Nicholas","Evelyn","Emmanuel","Vivian","Robert","Catherine",
+"Francis","Joy","Ben","Harriet","Tom","Jessica","Ronnie","Sophia","Gilbert","Angela",
+"Elijah","Deborah","Arnold","Tracy","Eric","Flavia","Collins","Judith","Edward","Melissa",
+"Jacob","Lydia","Frank","Agnes","Oscar","Christine","Felix","Rachel","William","Hope"
+];
+
+function phone(){
+    return "+2567"+Math.floor(Math.random()*90+10)+"****"+Math.floor(Math.random()*90+10);
+}
+
+function amount(){
+    const a=[50000,75000,100000,150000,200000,250000,300000,500000,750000,1000000,1500000,2000000,3000000];
+    return a[Math.floor(Math.random()*a.length)].toLocaleString();
+}
+
+let feed=[];
+
+// 100 Deposits
+for(let i=0;i<100;i++){
+    let user=Math.random()>0.5?phone():names[Math.floor(Math.random()*names.length)];
+    feed.push(`<span class="deposit">⬇️ ${user} deposited UGX ${amount()}</span>`);
+}
+
+// 100 Withdrawals
+for(let i=0;i<100;i++){
+    let user=Math.random()>0.5?phone():names[Math.floor(Math.random()*names.length)];
+    feed.push(`<span class="withdraw">⬆️ ${user} withdrew UGX ${amount()}</span>`);
+}
+
+// Shuffle
+feed.sort(()=>Math.random()-0.5);
+
+document.getElementById("liveFeed").innerHTML=
+feed.join("&nbsp;&nbsp; | &nbsp;&nbsp;");
+</script>
 
 <div class="banner">
     <h2>EXPO INVESTMENT Leads the New Era</h2>
     <p>Technology changes life</p>
     <div class="tag">The right money tool for you<br>Technological innovation changes the future.</div>
     <div class="circle">EXPO</div>
+</div>
+<div class="grid">
+  <a href="Recharge.html" class="grid-item">
+    <div class="grid-icon icon-blue">💳</div>
+    <div>Recharge</div>
+  </a>
+
+  <a href="Withdraw.html" class="grid-item">
+    <div class="grid-icon icon-green">🏦</div>
+    <div>Withdraw</div>
+  </a>
 </div>
 <!-- ===== HOME EXTRA SECTION ===== -->
 
@@ -462,18 +531,6 @@ function copyReferral(){
 </script>
 
 <!-- ===== END HOME EXTRA SECTION ===== -->
-
-<div class="grid">
-  <a href="Recharge.html" class="grid-item">
-    <div class="grid-icon icon-blue">💳</div>
-    <div>Recharge</div>
-  </a>
-  
-  <a href="Withdraw.html" class="grid-item">
-    <div class="grid-icon icon-green">🏦</div>
-    <div>Withdraw</div>
-  </a>
-</div>
 
 <div class="balance-row">
     <div class="balance-card blue">
