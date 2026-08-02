@@ -1364,6 +1364,43 @@ displayTransactions();
 },3000);
 
 </script>
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/+256726541750?text=Hello%20EXPO%20INVESTMENT%20Support,%20I%20need%20help."
+   class="whatsapp-float"
+   target="_blank">
+    <span>💬</span>
+</a>
+
+<style>
+.whatsapp-float{
+    position:fixed;
+    bottom:180px; /* Above the bottom navigation */
+    right:20px;
+    width:60px;
+    height:60px;
+    background:#25D366;
+    color:#fff;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:32px;
+    text-decoration:none;
+    box-shadow:0 6px 18px rgba(0,0,0,.3);
+    z-index:99999;
+    animation:whatsappPulse 1.8s infinite;
+}
+
+.whatsapp-float:hover{
+    transform:scale(1.1);
+}
+
+@keyframes whatsappPulse{
+    0%{box-shadow:0 0 0 0 rgba(37,211,102,.7);}
+    70%{box-shadow:0 0 0 15px rgba(37,211,102,0);}
+    100%{box-shadow:0 0 0 0 rgba(37,211,102,0);}
+}
+</style>
 
 </body>
 </html>
