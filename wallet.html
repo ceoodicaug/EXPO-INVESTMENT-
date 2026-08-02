@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wallet</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:#f5f5f5;
+}
+
+.header{
+background:linear-gradient(90deg,#0ca63b,#ffd700);
+padding:20px;
+color:white;
+text-align:center;
+border-radius:0 0 20px 20px;
+}
+
+.balance{
+margin:20px;
+background:white;
+padding:20px;
+border-radius:15px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+text-align:center;
+}
+
+.balance h1{
+color:#0ca63b;
+font-size:35px;
+}
+
+.menu{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+margin:20px;
+}
+
+.card{
+background:white;
+padding:20px;
+border-radius:15px;
+text-align:center;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+cursor:pointer;
+}
+
+.card:hover{
+background:#0ca63b;
+color:white;
+}
+
+.transactions{
+margin:20px;
+background:white;
+padding:15px;
+border-radius:15px;
+}
+
+.tx{
+padding:12px;
+border-bottom:1px solid #ddd;
+}
+
+.green{
+color:green;
+}
+
+.red{
+color:red;
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+<h2>My Wallet</h2>
+</div>
+
+<div class="balance">
+<h4>Available Balance</h4>
+<h1>UGX <span id="balance">0</span></h1>
+</div>
+
+<div class="menu">
+
+<div class="card" onclick="location.href='deposit.html'">
+💵<br><b>Deposit</b>
+</div>
+
+<div class="card" onclick="location.href='withdraw.html'">
+💸<br><b>Withdraw</b>
+</div>
+
+<div class="card" onclick="location.href='invest.html'">
+📈<br><b>Invest</b>
+</div>
+
+<div class="card">
+🎁<br><b>Bonuses</b>
+</div>
+
+</div>
+
+<div class="transactions">
+<h3>Recent Transactions</h3>
+
+<div class="tx green">
++ Deposit UGX 100,000
+</div>
+
+<div class="tx red">
+- Withdrawal UGX 50,000
+</div>
+
+<div class="tx green">
++ Daily Profit UGX 8,000
+</div>
+
+</div>
+
+<script>
+document.getElementById("balance").innerHTML =
+localStorage.getItem("wallet") || "0";
+</script>
+
+</body>
+</html>
