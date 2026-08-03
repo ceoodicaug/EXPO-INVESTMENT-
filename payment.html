@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EXPO INVESTMENT - Payment</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+
+background:linear-gradient(135deg,#4f6ef7,#7d3cff);
+
+min-height:100vh;
+
+padding:20px;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+}
+
+.container{
+
+width:100%;
+
+max-width:520px;
+
+background:#fff;
+
+border-radius:25px;
+
+overflow:hidden;
+
+box-shadow:0 20px 50px rgba(0,0,0,.25);
+
+}
+
+.header{
+
+padding:35px 20px;
+
+background:linear-gradient(135deg,#4f6ef7,#7d3cff);
+
+color:#fff;
+
+text-align:center;
+
+}
+
+.header h1{
+
+font-size:32px;
+
+margin-bottom:8px;
+
+}
+
+.header p{
+
+opacity:.9;
+
+font-size:15px;
+
+}
+
+.content{
+
+padding:25px;
+
+}
+
+.summary{
+
+background:#eef3ff;
+
+border-left:6px solid #4f6ef7;
+
+border-radius:15px;
+
+padding:20px;
+
+margin-bottom:25px;
+
+}
+
+.summary h2{
+
+color:#4f6ef7;
+
+margin-bottom:15px;
+
+}
+
+.row{
+
+display:flex;
+
+justify-content:space-between;
+
+margin:12px 0;
+
+font-size:17px;
+
+}
+
+.amount{
+
+font-size:34px;
+
+font-weight:bold;
+
+color:#4f6ef7;
+
+margin-top:15px;
+
+}
+
+.tabs{
+
+display:flex;
+
+margin-bottom:25px;
+
+border-bottom:2px solid #ddd;
+
+}
+
+.tab{
+
+flex:1;
+
+padding:15px;
+
+text-align:center;
+
+cursor:pointer;
+
+font-weight:bold;
+
+color:#666;
+
+border-bottom:4px solid transparent;
+
+transition:.3s;
+
+}
+
+.tab.active{
+
+color:#4f6ef7;
+
+border-color:#4f6ef7;
+
+}
+
+.payment{
+
+display:none;
+
+animation:fade .3s;
+
+}
+
+.payment.active{
+
+display:block;
+
+}
+
+@keyframes fade{
+
+from{
+
+opacity:0;
+
+transform:translateY(10px);
+
+}
+
+to{
+
+opacity:1;
+
+transform:none;
+
+}
+
+}
+
+.warning{
+
+background:#fff8dc;
+
+padding:15px;
+
+border-left:5px solid orange;
+
+border-radius:10px;
+
+margin-bottom:20px;
+
+font-size:14px;
+
+}
+
+.card{
+
+border:2px solid #e4e4e4;
+
+border-radius:15px;
+
+padding:18px;
+
+margin-bottom:20px;
+
+}
+
+.card h3{
+
+margin-bottom:10px;
+
+color:#666;
+
+}
+
+.copyBox{
+
+display:flex;
+
+justify-content:space-between;
+
+align-items:center;
+
+background:#f8f8f8;
+
+padding:12px;
+
+border-radius:10px;
+
+font-weight:bold;
+
+font-size:18px;
+
+}
+
+.copyBtn{
+
+background:#4f6ef7;
+
+color:white;
+
+border:none;
+
+padding:10px 18px;
+
+border-radius:8px;
+
+cursor:pointer;
+
+}
+
+.steps{
+
+background:#fafafa;
+
+padding:18px;
+
+border-radius:15px;
+
+margin-bottom:20px;
+
+}
+
+.steps h3{
+
+margin-bottom:12px;
+
+color:#333;
+
+}
+
+.steps ol{
+
+padding-left:20px;
+
+line-height:2;
+
+}
+
+.buttons{
+
+display:flex;
+
+gap:15px;
+
+margin-top:20px;
+
+}
+
+.btn{
+
+flex:1;
+
+padding:16px;
+
+border:none;
+
+border-radius:12px;
+
+font-size:17px;
+
+font-weight:bold;
+
+cursor:pointer;
+
+transition:.3s;
+
+}
+
+.back{
+
+background:#efefef;
+
+}
+
+.confirm{
+
+background:linear-gradient(135deg,#4f6ef7,#7d3cff);
+
+color:white;
+
+}
+
+.confirm:hover{
+
+transform:translateY(-2px);
+
+}
+
+.success{
+
+display:none;
+
+background:#d9ffe2;
+
+color:#006b2d;
+
+padding:15px;
+
+border-left:5px solid green;
+
+border-radius:10px;
+
+margin-top:20px;
+
+}
+
+.footer{
+
+padding:25px;
+
+text-align:center;
+
+background:#fafafa;
+
+border-top:1px solid #ddd;
+
+font-size:14px;
+
+color:#666;
+
+}
+
+.footer p{
+
+margin:8px 0;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>💳 Payment Instructions</h1>
+
+<p>Complete your deposit transfer</p>
+
+</div>
+
+<div class="content">
+
+<div class="summary">
+
+<h2>Deposit Summary</h2>
+
+<div class="row">
+
+<span>Phone</span>
+
+<strong id="phone">Loading...</strong>
+
+</div>
+
+<div class="row">
+
+<span>Method</span>
+
+<strong id="method">Loading...</strong>
+
+</div>
+
+<div class="amount" id="amount">
+
+UGX 0
+
+</div>
+
+</div>
+
+<div class="tabs">
+
+<div class="tab active" id="tabMTN">
+
+📲 MTN MoMo
+
+</div>
+
+<div class="tab" id="tabAirtel">
+
+💰 Airtel Money
+
+</div>
+
+</div>
+
+<!-- MTN -->
+
+<div class="payment active" id="mtn">
+
+<div class="warning">
+
+⚠ Send the exact amount shown above using MTN Mobile Money.
+
+</div>
+
+<div class="card">
+
+<h3>Send Money To</h3>
+
+<div class="copyBox">
+
+<span id="mtnNumber">
+
+0760403590
+
+</span>
+
+<button class="copyBtn" id="copyMTN">
+
+Copy
+
+</button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Account Name</h3>
+
+<div class="copyBox">
+
+<span>
+
+ODICA JAMES PETER
+
+</span>
+
+</div>
+
+</div>
+
+<div class="steps">
+
+<h3>Steps</h3>
+
+<ol>
+
+<li>Dial *165#</li>
+
+<li>Select Send Money</li>
+
+<li>Enter 0760403590</li>
+
+<li>Enter the exact amount</li>
+
+<li>Enter your PIN</li>
+
+<li>Confirm payment</li>
+
+</ol>
+
+</div>
+
+</div>
+
+<!-- Airtel -->
+
+<div class="payment" id="airtel">
+
+<div class="warning">
+
+⚠ Send the exact amount shown above using Airtel Money.
+
+</div>
+
+<div class="card">
+
+<h3>Send Money To</h3>
+
+<div class="copyBox">
+
+<span id="airtelNumber">
+
+0747331064
+
+</span>
+
+<button class="copyBtn" id="copyAirtel">
+
+Copy
+
+</button>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>Account Name</h3>
+
+<div class="copyBox">
+
+<span>
+
+ODICA JAMES PETER
+
+</span>
+
+</div>
+
+</div>
+
+<div class="steps">
+
+<h3>Steps</h3>
+
+<ol>
+
+<li>Dial *185#</li>
+
+<li>Select Send Money</li>
+
+<li>Enter 0747331064</li>
+
+<li>Enter the exact amount</li>
+
+<li>Enter your PIN</li>
+
+<li>Confirm payment</li>
+
+</ol>
+
+</div>
+
+</div>
+
+<div class="buttons">
+
+<button class="btn back" id="backBtn">
+
+← Back
+
+</button>
+
+<button class="btn confirm" id="confirmBtn">
+
+✔ I've Sent the Money
+
+</button>
+
+</div>
+
+<div class="success" id="success">
+
+Deposit request submitted successfully.
+
+Waiting for admin approval...
+
+</div>
+
+</div>
+
+<div class="footer">
+
+<p>🔒 Your payment information is encrypted.</p>
+
+<p>Need help? Contact support on WhatsApp.</p>
+
+</div>
+
+</div>
+
+<script>
+// ==========================
+// Load Deposit Information
+// ==========================
+const depositData = JSON.parse(sessionStorage.getItem("depositData") || "{}");
+
+if (!depositData.amount) {
+    alert("No deposit information found.");
+    window.location.href = "Recharge.html";
+}
+
+// Display information
+document.getElementById("phone").textContent = depositData.phone || "";
+document.getElementById("amount").textContent =
+    "UGX " + Number(depositData.amount).toLocaleString();
+
+if (depositData.method === "airtel") {
+    document.getElementById("method").textContent = "Airtel Money";
+} else {
+    document.getElementById("method").textContent = "MTN MoMo";
+}
+
+// ==========================
+// Payment Tabs
+// ==========================
+const tabMTN = document.getElementById("tabMTN");
+const tabAirtel = document.getElementById("tabAirtel");
+
+const mtn = document.getElementById("mtn");
+const airtel = document.getElementById("airtel");
+
+function openMTN(){
+
+    tabMTN.classList.add("active");
+    tabAirtel.classList.remove("active");
+
+    mtn.classList.add("active");
+    airtel.classList.remove("active");
+
+}
+
+function openAirtel(){
+
+    tabAirtel.classList.add("active");
+    tabMTN.classList.remove("active");
+
+    airtel.classList.add("active");
+    mtn.classList.remove("active");
+
+}
+
+tabMTN.onclick = openMTN;
+tabAirtel.onclick = openAirtel;
+
+if(depositData.method === "airtel"){
+    openAirtel();
+}else{
+    openMTN();
+}
+
+// ==========================
+// Copy Buttons
+// ==========================
+function copy(id){
+
+    const value = document.getElementById(id).textContent;
+
+    navigator.clipboard.writeText(value);
+
+    alert("Copied: " + value);
+
+}
+
+document.getElementById("copyMTN").onclick = ()=>copy("mtnNumber");
+document.getElementById("copyAirtel").onclick = ()=>copy("airtelNumber");
+
+// ==========================
+// Back Button
+// ==========================
+document.getElementById("backBtn").onclick=function(){
+
+    history.back();
+
+};
+
+// ==========================
+// Submit Deposit
+// ==========================
+document.getElementById("confirmBtn").onclick=function(){
+
+    const deposit={
+
+        id:"DEP"+Date.now(),
+
+        amount:Number(depositData.amount),
+
+        phone:depositData.phone,
+
+        method:
+            depositData.method==="airtel"
+            ? "Airtel Money"
+            : "MTN MoMo",
+
+        status:"Pending",
+
+        created:new Date().toLocaleString()
+
+    };
+
+    let deposits=
+    JSON.parse(localStorage.getItem("deposits")||"[]");
+
+    deposits.unshift(deposit);
+
+    localStorage.setItem(
+        "deposits",
+        JSON.stringify(deposits)
+    );
+
+    // Admin Notification
+    let notifications=
+    JSON.parse(localStorage.getItem("adminNotifications")||"[]");
+
+    notifications.unshift({
+
+        id:Date.now(),
+
+        title:"New Deposit",
+
+        message:
+        deposit.phone+
+        " deposited UGX "+
+        deposit.amount.toLocaleString(),
+
+        status:"Unread",
+
+        date:new Date().toLocaleString()
+
+    });
+
+    localStorage.setItem(
+        "adminNotifications",
+        JSON.stringify(notifications)
+    );
+
+    // Show Success
+    document.getElementById("success").style.display="block";
+
+    // Clear temporary data
+    sessionStorage.removeItem("depositData");
+
+    setTimeout(function(){
+
+        window.location.href="dashboard.html";
+
+    },2000);
+
+};
+</script>
+
+</body>
+
+</html>
