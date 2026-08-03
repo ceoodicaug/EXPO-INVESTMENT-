@@ -194,7 +194,7 @@ function registerUser(){
     alert("Registration successful!");
 
     // Redirect to your home page
-    window.location.href = "home.html";
+    window.location.href = "Home.html";
 }
 
 function loginUser(){
@@ -208,7 +208,7 @@ function loginUser(){
 
     if(user){
         localStorage.setItem("loggedInUser", email);
-        window.location.href = "home.html";
+        window.location.href = "Home.html";
     }else{
         alert("Invalid email or password.");
     }
