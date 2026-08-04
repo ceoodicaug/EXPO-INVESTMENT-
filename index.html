@@ -171,7 +171,7 @@ let user=users.find(u=>u.contact===contact && u.password===password);
 
 if(user){
     localStorage.setItem("loggedInUser",JSON.stringify(user));
-    window.location.href="home.html"; // Change to your homepage
+    window.location.href="dashboard.html"; // Change to your homepage
 }else{
     alert("Invalid contact or password.");
 }
