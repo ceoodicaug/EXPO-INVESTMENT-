@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXPO INVESTMENT</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:linear-gradient(135deg,#FFD700,#B8860B);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.container{
+    width:350px;
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 0 20px rgba(0,0,0,.3);
+}
+
+h2{
+    text-align:center;
+    color:#B8860B;
+    margin-bottom:20px;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    background:gold;
+    color:#000;
+    border:none;
+    border-radius:8px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#DAA520;
+}
+
+p{
+    text-align:center;
+    margin-top:15px;
+}
+
+a{
+    color:#B8860B;
+    text-decoration:none;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#loginForm{
+    display:none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<!-- Register -->
+<div id="registerForm">
+<h2>Register</h2>
+
+<input type="tel" id="regContact" placeholder="Contact Number">
+<input type="password" id="regPassword" placeholder="Password">
+<input type="password" id="regConfirm" placeholder="Confirm Password">
+
+<button onclick="register()">Register</button>
+
+<p>Already have an account?
+<a onclick="showLogin()">Login</a>
+</p>
+</div>
+
+<!-- Login -->
+<div id="loginForm">
+<h2>Login</h2>
+
+<input type="tel" id="loginContact" placeholder="Contact Number">
+<input type="password" id="loginPassword" placeholder="Password">
+
+<button onclick="login()">Login</button>
+
+<p>Don't have an account?
+<a onclick="showRegister()">Register</a>
+</p>
+</div>
+
+</div>
+
+<script>
+
+function showLogin(){
+    document.getElementById("registerForm").style.display="none";
+    document.getElementById("loginForm").style.display="block";
+}
+
+function showRegister(){
+    document.getElementById("loginForm").style.display="none";
+    document.getElementById("registerForm").style.display="block";
+}
+
+function register(){
+
+let contact=document.getElementById("regContact").value.trim();
+let password=document.getElementById("regPassword").value;
+let confirm=document.getElementById("regConfirm").value;
+
+if(contact===""||password===""||confirm===""){
+    alert("Fill all fields.");
+    return;
+}
+
+if(password!==confirm){
+    alert("Passwords do not match.");
+    return;
+}
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+if(users.find(u=>u.contact===contact)){
+    alert("Account already exists.");
+    return;
+}
+
+users.push({
+    contact:contact,
+    password:password
+});
+
+localStorage.setItem("users",JSON.stringify(users));
+
+alert("Registration successful!");
+
+window.location.href="home.html"; // Change to your homepage
+}
+
+function login(){
+
+let contact=document.getElementById("loginContact").value.trim();
+let password=document.getElementById("loginPassword").value;
+
+let users=JSON.parse(localStorage.getItem("users"))||[];
+
+let user=users.find(u=>u.contact===contact && u.password===password);
+
+if(user){
+    localStorage.setItem("loggedInUser",JSON.stringify(user));
+    window.location.href="home.html"; // Change to your homepage
+}else{
+    alert("Invalid contact or password.");
+}
+
+}
+
+</script>
+
+</body>
+</html>
